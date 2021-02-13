@@ -1,0 +1,27 @@
+Raw Resources,Weight,Notes,Units,
+R1,1.5,analog to population,million people,
+R2,2,analog to metallic elements,tons,
+R3,1,analog to timber,tons,
+R4,2,analog to available land,thousand square miles,
+R5,2,analog to renewable energy,billion kilowatts,
+R6,2,analog to fossil fuel energy ,billion kilowatts,
+R7,1,analog to water,trillion gallons,
+R8,1,analog to animals,million animals,
+R9,1,analog to plants,million plants,
+R1',-0.5,population waste,,
+R5',-0.5,renewable energy waste,,
+R6',-0.5,nonrenewable energy waste,,
+,,,,
+,,,,
+,,,,
+Created Resources,Weight,Notes,,"Origins(water, population for all)"
+R18,2,analog to metallic alloys,tons,metallic elements
+R19 ,3,analog to housing,# houses,"land, timber"
+R20,3,analog to electronics,units,"metallic elements, metallic alloys"
+R21,3,analog to farm,square miles,"animals, plants, land"
+R22,3,analog to factory,# factories,"land, energy, metallic elements, timber"
+R18',-1,metallic alloys waste,,
+R19',-1,housing waste,,
+R20',-1,electronics waste,,
+R21',-1,farm waste,,
+R22',-1,factory waste,,
