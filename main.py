@@ -1,7 +1,5 @@
 import pandas as pd
 
-
-
 resources_df = pd.read_excel('resources.xlsx')
 state_df = pd.read_excel('initial_state.xlsx')
 
@@ -19,4 +17,5 @@ def state_quality(country: str):
 
   return weighted_sum / population
 
+# For testing
 print(state_quality('Atlantis'))
