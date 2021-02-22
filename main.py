@@ -1,25 +1,22 @@
 import pandas as pd
 
-resources_df = pd.read_excel('/Users/aaronwong/Desktop/code/ai_project/resources.xlsx')
-state_df = pd.read_excel('/Users/aaronwong/Desktop/code/ai_project/initial_state.xlsx')
+
+
+resources_df = pd.read_excel('resources.xlsx')
+state_df = pd.read_excel('initial_state.xlsx')
 
 def state_quality(country: str):
   country_df = state_df[state_df['Country'] == country]
-  population = country_df['R1']
+  country_index = country_df.index.tolist()[0]
+  population = country_df['R1'].iloc[country_index]
+  
   weighted_sum = 0.0
-
   for resource in country_df:
     if resource != 'Country':
-      quantity = country_df[resource]
-      val = resources_df[resources_df['Resources'] == resource].Weight
-      print(resource)
-      print(quantity)
-      print(val)
-      # print(str(quantity * val))
-      weighted_sum = weighted_sum + (quantity * val)
-      print(str(weighted_sum))
-      break
+      resource_quantity = country_df[resource].iloc[country_index]
+      resource_value = resources_df[resources_df['Resources'] == resource]['Weight'].iloc[0]
+      weighted_sum = weighted_sum + (resource_quantity * resource_value)
 
   return weighted_sum / population
 
-state_quality('Atlantis')
+print(state_quality('Atlantis'))
