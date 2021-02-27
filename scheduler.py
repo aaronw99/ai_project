@@ -32,7 +32,7 @@ class Scheduler:
 					nextUtility = self.world.getExpectedUtility(nextState, len(schedule) + 1)
 					nextSchedule = schedule + [[nextAction, nextUtility]]
 					if nextState not in visited:
-						heapq.heappush(pq, (nextUtility, nextState, nextSchedule))
+						heapq.heappush(pq, (-nextUtility, nextState, nextSchedule))
 						# maintains a fix-sized heap
 						if len(pq) > maxSize:
 							heapq.heappop(pq)

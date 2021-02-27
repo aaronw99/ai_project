@@ -86,7 +86,7 @@ class World:
         startQuality = calculate_state_quality(self.startState, self.myCountry)
         endQuality = calculate_state_quality(state, self.myCountry)
         #add the expected utility function here
-        return startQuality - endQuality
+        return endQuality - startQuality
         
 
 # housing = {
