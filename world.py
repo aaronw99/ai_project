@@ -16,8 +16,6 @@ class World:
     def __init__(self, myCountry, transform_templates):
         self.myCountry = myCountry
         self.transform_templates = transform_templates
-        
-    def getStartState(self):
         data = pd.read_excel('initial_state.xlsx')
         df = pd.DataFrame(data)
         #reformats in json style
@@ -46,7 +44,10 @@ class World:
             initial_state[row["Country"]]["R20'"] = row["R20'"]
             initial_state[row["Country"]]["R21'"] = row["R21'"]
             initial_state[row["Country"]]["R22'"] = row["R22'"]
-        return initial_state
+        self.startState = initial_state
+        
+    def getStartState(self):
+        return self.startState
     
     def generateSuccessors(self, state):
         successors = []
@@ -65,7 +66,11 @@ class World:
                 theirResources = state[country]
                 
         return successors
-                
+    
+    def getExpectedUtility(self, state, length):
+        #calculate eu for self.myCountry
+        return 0
+        
 
 housing = {
     "in": {'R1': 5, 'R2': 1, 'R3': 5, 'R18': 3},
