@@ -12,8 +12,19 @@ def calculate_transform_max_multiplier(resources, template):
             multiplier = min(multiplier, int(resources[r_type] / inputs[r_type]))
     return multiplier
 
-def calculate_state_quality(state, country):
-    return 0
+def calculate_state_quality(state: dict, country: str):
+    country_resources = state[country]
+    population = country_resources['R1']
+
+    resources_df = pd.read_excel('resources.xlsx')
+
+    weighted_sum = 0.0
+    for resource in country_resources.keys():
+        resource_quantity = country_resources[resource]
+        resource_value = resources_df[resources_df['Resources'] == resource]['Weight'].iloc[0]
+        weighted_sum = weighted_sum + (resource_quantity * resource_value)
+
+    return weighted_sum / population
 
 class World:
     def __init__(self, myCountry, transform_templates):
@@ -119,7 +130,7 @@ print(len(successors))
 #this is the format of a single entry in the output
 print(successors[2])
 
-
-
+print("Testing calculate_state_quality")
+print(calculate_state_quality(startState, 'Atlantis'))
 
 
