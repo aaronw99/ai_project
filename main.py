@@ -18,7 +18,9 @@ myCountry = "Atlantis"
 world = World(myCountry, transform_templates)
 
 scheduler = Scheduler(world)
-maxDepth = 10
-maxSize = 15
+maxDepth = 2
+maxSize = 30
 schedule = scheduler.search(maxDepth, maxSize)
+for action in schedule:
+    print(action)
 
