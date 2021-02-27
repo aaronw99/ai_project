@@ -12,6 +12,9 @@ def calculate_transform_max_multiplier(resources, template):
             multiplier = min(multiplier, int(resources[r_type] / inputs[r_type]))
     return multiplier
 
+def calculate_state_quality(state, country):
+    return 0
+
 class World:
     def __init__(self, myCountry, transform_templates):
         self.myCountry = myCountry
@@ -69,6 +72,9 @@ class World:
     
     def getExpectedUtility(self, state, length):
         #calculate eu for self.myCountry
+        startQuality = calculate_state_quality(self.startState, self.myCountry)
+        endQuality = calculate_state_quality(state, self.myCountry)
+        #add the expected utility function here
         return 0
         
 
