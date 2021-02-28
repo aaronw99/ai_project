@@ -23,12 +23,12 @@ class Transfer:
         return self.state_1, self.state_2
         
     def toString(self):
-        string = "(TRANSFER " + self.country1 
+        string = "(TRANSFER " + self.country_1 
         inputs = self.template["in"]
         outputs = self.template["out"]
         for r_type in inputs:
             string = string + "(" + r_type + " " + str(inputs[r_type] * self.multiplier) + ")"
-        string = string + " TRANSFER " + self.country2 
+        string = string + " TRANSFER " + self.country_2 
         for r_type in outputs:
             string = string + "(" + r_type + " " + str(outputs[r_type] * self.multiplier)+ ")"
         string = string + "))"
