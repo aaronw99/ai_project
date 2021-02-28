@@ -13,11 +13,11 @@ class Transfer:
         inputs = self.trade["in"]
         outputs = self.trade["out"]
         for r_type in inputs:
-            self.state[self.country_1][r_type] = self.state[self.country_1][r_type] + outputs[r_type] 
+            self.state[self.country_1][r_type] = self.state[self.country_1][r_type] + inputs[r_type] 
             self.state[self.country_2][r_type] = self.state[self.country_2][r_type] - inputs[r_type] 
         for r_type in outputs:
             self.state[self.country_1][r_type] = self.state[self.country_1][r_type] - outputs[r_type]
-            self.state[self.country_2][r_type] = self.state[self.country_2][r_type] + inputs[r_type] 
+            self.state[self.country_2][r_type] = self.state[self.country_2][r_type] + outputs[r_type] 
         return self.state
         
     def toString(self):
