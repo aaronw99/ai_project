@@ -8,22 +8,20 @@ class Scheduler:
 	def search(self, maxDepth, maxSize):
 		pq = []
 		visited = []
-		candidate = []
 		result = []
 		maxUtility = float('-inf')
 		initialState = self.world.getStartState()
-		heapq.heappush(pq, (0, initialState, 0))
-		while not pq.isEmpty():
+		heapq.heappush(pq, (0, initialState, []))
+		while pq:
 			cur = heapq.heappop(pq)
 			utility = cur[0]
 			state = cur[1]
-			depth = cur[2]
+			schedule = cur[2]
 			# reaches maximum depth
-			if depth == maxDepth:
+			if len(schedule) == maxDepth:
 				if utility >= maxUtility:
-					result = copy.deepcopy(candidate)
+					result = copy.deepcopy(schedule)
 					maxUtility = utility
-					candidate.pop()
 			# explores current state if new
 			if state not in visited:
 				visited.append(state)
@@ -31,10 +29,10 @@ class Scheduler:
 				for successor in self.world.getSuccessors(state):
 					nextState = successor[0]
 					nextAction = successor[1]
-					nextUtility = self.world.getExpectedUtility(nextState, depth)
-					candidate.append([nextAction, nextUtility])
+					nextUtility = self.world.getExpectedUtility(nextState, len(schedule) + 1)
+					nextSchedule = schedule + [[nextAction, nextUtility]]
 					if nextState not in visited:
-						heapq.heappush(pq, (nextUtility, nextState, depth + 1))
+						heapq.heappush(pq, (-nextUtility, nextState, nextSchedule))
 						# maintains a fix-sized heap
 						if len(pq) > maxSize:
 							heapq.heappop(pq)

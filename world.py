@@ -12,8 +12,19 @@ def calculate_transform_max_multiplier(resources, template):
             multiplier = min(multiplier, int(resources[r_type] / inputs[r_type]))
     return multiplier
 
-def calculate_state_quality(state, country):
-    return 0
+def calculate_state_quality(state: dict, country: str):
+    country_resources = state[country]
+    population = country_resources['R1']
+
+    resources_df = pd.read_excel('resources.xlsx')
+
+    weighted_sum = 0.0
+    for resource in country_resources.keys():
+        resource_quantity = country_resources[resource]
+        resource_value = resources_df[resources_df['Resources'] == resource]['Weight'].iloc[0]
+        weighted_sum = weighted_sum + (resource_quantity * resource_value)
+
+    return weighted_sum / population
 
 class World:
     def __init__(self, myCountry, transform_templates):
@@ -52,13 +63,13 @@ class World:
     def getStartState(self):
         return self.startState
     
-    def generateSuccessors(self, state):
+    def getSuccessors(self, state):
         successors = []
-        my_resources = state[self.myCountry]
+        myResources = state[self.myCountry]
         #generate possible transforms
         for template in self.transform_templates:
             #check maximum possible multipler
-            multiplier = calculate_transform_max_multiplier(my_resources, template)
+            multiplier = calculate_transform_max_multiplier(myResources, template)
             #print(multiplier)
             for i in range(1, multiplier + 1):
                 transform = Transform(state, self.myCountry, template, i)
@@ -75,51 +86,51 @@ class World:
         startQuality = calculate_state_quality(self.startState, self.myCountry)
         endQuality = calculate_state_quality(state, self.myCountry)
         #add the expected utility function here
-        return 0
+        return endQuality - startQuality
         
 
-housing = {
-    "in": {'R1': 5, 'R2': 1, 'R3': 5, 'R18': 3},
-    "out": {'R1': 5, 'R19': 1, "R19'": 1}
-}
-alloys = {
-    "in": {'R1': 1, 'R2': 2},
-    "out": {'R1': 1, "R18": 1, "R18'": 5}
-}
-electronics = {
-    "in": {'R1': 1, 'R2': 3, 'R18': 2},
-    "out": {'R1': 1, "R20": 2, "R20'": 1}
-}
-transform_templates = [housing, alloys, electronics]
-myCountry = "Atlantis"
-world = World(myCountry, transform_templates)
-print("Testing world ctor")
-startState = world.getStartState()
-print(startState)
+# housing = {
+#     "in": {'R1': 5, 'R2': 1, 'R3': 5, 'R18': 3},
+#     "out": {'R1': 5, 'R19': 1, "R19'": 1}
+# }
+# alloys = {
+#     "in": {'R1': 1, 'R2': 2},
+#     "out": {'R1': 1, "R18": 1, "R18'": 5}
+# }
+# electronics = {
+#     "in": {'R1': 1, 'R2': 3, 'R18': 2},
+#     "out": {'R1': 1, "R20": 2, "R20'": 1}
+# }
+# transform_templates = [housing, alloys, electronics]
+# myCountry = "Atlantis"
+# world = World(myCountry, transform_templates)
+# print("Testing world ctor")
+# startState = world.getStartState()
+# print(startState)
 
-print("Testing calculate_transform_max_multiplier")
-my_resources = startState["Atlantis"]
-print(my_resources)
-print(calculate_transform_max_multiplier(my_resources, alloys))
-print(calculate_transform_max_multiplier(my_resources, housing))
+# print("Testing calculate_transform_max_multiplier")
+# my_resources = startState["Atlantis"]
+# print(my_resources)
+# print(calculate_transform_max_multiplier(my_resources, alloys))
+# print(calculate_transform_max_multiplier(my_resources, housing))
 
-print("Testing transform")
-transform = Transform(startState, myCountry, alloys, 1)
-print(transform.toString())
-newState = transform.execute()
+# print("Testing transform")
+# transform = Transform(startState, myCountry, alloys, 1)
+# print(transform.toString())
+# newState = transform.execute()
 
-print(newState)
-print(startState) #IMPORTANT: notice that execute operates on a deep copy of the state
+# print(newState)
+# print(startState) #IMPORTANT: notice that execute operates on a deep copy of the state
 
-print("Testing generateSuccessors")
-successors = world.generateSuccessors(startState)
-#this should print out 100 since only 100 variations of the alloy transform can be applied
-#on the initial state for Atlantis
-print(len(successors))
-#this is the format of a single entry in the output
-print(successors[2])
+# print("Testing getSuccessors")
+# successors = world.getSuccessors(startState)
+# #this should print out 100 since only 100 variations of the alloy transform can be applied
+# #on the initial state for Atlantis
+# print(len(successors))
+# #this is the format of a single entry in the output
+# print(successors[2])
 
-
-
+# print("Testing calculate_state_quality")
+# print(calculate_state_quality(startState, 'Atlantis'))
 
 
