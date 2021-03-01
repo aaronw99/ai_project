@@ -25,4 +25,7 @@ for step in schedule:
     action = step[0]
     eu = -step[1]
     print(action, "EU: ", eu)
+    
+#country: {R1: 100, R2: 500, R3: 200}
+#transform = Transform(country, alloys, 1) 1-100
 

@@ -86,7 +86,13 @@ class World:
         startQuality = calculate_state_quality(self.startState, self.myCountry)
         endQuality = calculate_state_quality(state, self.myCountry)
         #add the expected utility function here
-        return endQuality - startQuality
+        gamma = 0.9
+        reward = endQuality - startQuality
+        discounted_reward = gamma ** length * reward
+        probability_success = 1
+        failure_cost = 0
+        eu = probability_success * discounted_reward + (1 - probability_success) * failure_cost
+        return eu
         
 
 # housing = {
