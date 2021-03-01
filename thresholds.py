@@ -1,4 +1,4 @@
-# For survival thresholds, multiply each by .25
+# For survival thresholds, multiply each by .20
 comfortable_thresholds = {'R2': 1.5, 'R3': 1, 'R4': 6, 'R5': 50, 'R6': 250, 'R7': 300,
                           'R8': 33, 'R9': 2.5, 'R18': 1.5, 'R19': .4, 'R20': 10, 'R21': 3,  'R22': 1}
 
@@ -8,7 +8,7 @@ Thresholds reflect number of resources needed per 1 million people
 
 Benchmark: actual US levels = comfortable, 20% US levels = survival
 US GDP per capita: 60k, 
-20% = 12k, which represents the 100th highest gdp per capita
+20% = 12k, which represents the 100th highest gdp per capita, roughly how much a 3rd-world country makes
 
 Will decrease with transforms:
 
