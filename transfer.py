@@ -19,5 +19,5 @@ class Transfer:
     def toString(self):
         type = self.trade[0]
         quantity = self.trade[1]
-        string = "(TRANSFER " + self.country_1 + " " + self.country_2 + "(" + type + " " + str(quantity) + "))"
+        string = "(TRANSFER " + self.country_1 + " " + self.country_2 + " (" + type + " " + str(quantity) + "))"
         return string
