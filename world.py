@@ -28,6 +28,24 @@ def calculate_state_quality(state: dict, country: str):
 
     return weighted_sum / population
 
+#todo: this finds possible "good"(for now maybe just "possible") trades received by (country)
+#      and returns a list of the end state after the trade is executed
+def find_received_trades(curState, country):
+    return []
+
+#todo: implement find_received_trades
+def calculate_success_rate(curState, country, payout):
+    #todo: generate possible trades received by (country) given (curState)
+    trades = find_received_trades(curState, country)
+    #calculate payout for each trade and store in (possiblePayouts = []) in ascending order
+    possiblePayouts = []
+    for trade in trades:
+        p = calculate_state_quality(trade) - calculate_state_quality(curState)
+        possiblePayouts.append(p)
+    possiblePayouts.sort()
+    #success rate is the relative position of (payout) in (possiblePayouts)
+    return (possiblePayouts.index(payout) + 1) / len(possiblePayouts)
+
 class World:
     def __init__(self, myCountry, transform_templates):
         self.myCountry = myCountry
@@ -96,17 +114,23 @@ class World:
                         successors.append([transfer.execute(), transfer.toString()])
         return successors
     
-    def getExpectedUtility(self, state, length):
+    def getExpectedUtility(self, endState, length, action):
         #calculate eu for self.myCountry
         startQuality = calculate_state_quality(self.startState, self.myCountry)
-        endQuality = calculate_state_quality(state, self.myCountry)
+        endQuality = calculate_state_quality(endState, self.myCountry)
         gamma = 1
         reward = endQuality - startQuality
         #print("start:", startQuality, "end:", endQuality, "reward:", reward)
         discounted_reward = (gamma ** length) * reward
-        probability_success = 1
-        failure_cost = 0
-        eu = probability_success * discounted_reward + (1 - probability_success) * failure_cost
+        if action[0] == "TRANSFER":
+            #calculate the payout for the other country
+            otherCountry = action[1]
+            curState = action[2]
+            payout = calculate_state_quality(endState, otherCountry) - calculate_state_quality(curState, otherCountry)
+            probability_success = calculate_success_rate(curState, otherCountry, payout)
+            #todo: figure out the failure cost
+            failure_cost = -discounted_reward
+            eu = probability_success * discounted_reward + (1 - probability_success) * failure_cost
         return eu
         
 
