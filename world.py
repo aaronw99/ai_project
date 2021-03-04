@@ -16,30 +16,34 @@ def calculate_state_quality(state: dict, country: str):
     country_resources = state[country]
     population = country_resources['R1']
 
-    # Calculate required amounts of resources for "survival" level
+    # Calculate required amounts of resources for "survival" and "comfortable" level
     survival = {'R2': 1.5, 'R3': 1, 'R4': 6, 'R5': 50, 'R6': 250, 'R7': 300, 'R8': 33, 'R9': 2.5, 'R18': 1.5, 'R19': .4, 'R20': 10, 'R21': 3,  'R22': 1}
+    comfortable = {'R2': 1.5, 'R3': 1, 'R4': 6, 'R5': 50, 'R6': 250, 'R7': 300, 'R8': 33, 'R9': 2.5, 'R18': 1.5, 'R19': .4, 'R20': 10, 'R21': 3,  'R22': 1}
     for resource in survival.keys():
         survival[resource] = survival[resource] * 0.2 * population
+        comfortable[resource] = comfortable[resource] * population
 
     resources_df = pd.read_excel('resources.xlsx')
-
     weighted_sum = 0.0
-
     below_survival = False
 
     for resource in country_resources.keys():
         resource_quantity = country_resources[resource]
         resource_value = resources_df[resources_df['Resources'] == resource]['Weight'].iloc[0]
+        above_comfortable = False
 
-        # Check if any resources are below survival level
         if resource in survival.keys():
-            below_survival = resource_quantity < survival[resource] or below_survival
+            if resource_quantity < survival[resource]:
+                below_survival = True
+            elif resource_quantity >= comfortable[resource]:
+                above_comfortable = True
 
-        weighted_sum = weighted_sum + (resource_quantity * resource_value)
+        if above_comfortable:
+            difference = resource_quantity - comfortable[resource]
+            weighted_sum = weighted_sum + (comfortable[resource] * resource_value) + (difference * resource_value / 2)
+        else:
+            weighted_sum = weighted_sum + (resource_quantity * resource_value)
 
-    # If the country's resources are below the survival point, penalize the state quality by 1000. They should not be rated high since they are below survival.
-    # With a simple penalty, countries are still encouraged to accumulate more of a resource they are in deficit of until surivival is reached.
-    # 1000 is a factor subject to change after testing.
     normalized = weighted_sum / population
     if below_survival:
         return normalized - 1000
@@ -158,5 +162,3 @@ class World:
 
 # print("Testing calculate_state_quality")
 # print(calculate_state_quality(startState, 'Atlantis'))
-
-
