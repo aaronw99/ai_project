@@ -1,0 +1,10 @@
+Test Initial States
+initial_state_1: Atlantis at survival, all others below
+initial_state_2: All below survival
+initial_state_3: Atlantis below survival, all others above
+initial_state_4: All countries at surivival level
+initial_state_5: Atlantis at comfortable level, all others at survival
+initial_state_6: Atlantis at survival level, all others at comfortable level
+initial_state_7: All countries at comfortable level
+initial_state_8: Atlantis at comfortable level, all others below survival
+initial_state_9: Atlantis below survival, all others at comfortable level
