@@ -13,7 +13,12 @@ class Scheduler:
 		initialState = self.world.getStartState()
 		heapq.heappush(pq, (0, initialState, []))
 		while pq:
-			cur = heapq.heappop(pq)
+			try:
+				cur = heapq.heappop(pq)
+				# print('successful heappop')
+			except:
+				# print('Dicts not comparable, heappop')
+				continue
 			utility = cur[0]
 			state = cur[1]
 			schedule = cur[2]
@@ -32,9 +37,17 @@ class Scheduler:
 					nextUtility = self.world.getExpectedUtility(nextState, len(schedule) + 1)
 					nextSchedule = schedule + [[nextAction, nextUtility]]
 					if nextState not in visited:
-						heapq.heappush(pq, (-nextUtility, nextState, nextSchedule))
+						try:
+							heapq.heappush(pq, (-nextUtility, nextState, nextSchedule))
+							# print('successful heappush')
+						except:
+							# print('Dicts not comparable, heappush')
+							pass
 						# maintains a fix-sized heap
 						if len(pq) > maxSize:
-							heapq.heappop(pq)
+							try:
+								heapq.heappop(pq)
+							except:
+								pass
 		return result
 
