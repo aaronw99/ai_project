@@ -33,9 +33,9 @@ def calculate_state_quality(state: dict, country: str):
         above_comfortable = False
 
         if resource in survival.keys():
-            if resource_quantity < survival[resource]:
+            if resource_quantity < int(survival[resource]):
                 below_survival = True
-            elif resource_quantity >= comfortable[resource]:
+            elif resource_quantity >= int(comfortable[resource]):
                 above_comfortable = True
 
         if above_comfortable:
