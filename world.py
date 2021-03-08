@@ -61,28 +61,6 @@ def calculate_state_quality(state: dict, country: str):
     else:
         return normalized
 
-# todo: this finds possible "good"(for now maybe just "possible") trades received by (country)
-#      and returns a list of the end state after the trade is executed
-
-
-def find_received_trades(curState, country):
-    return []
-
-# todo: implement find_received_trades
-
-
-def calculate_success_rate(curState, country, payout):
-    # todo: generate possible trades received by (country) given (curState)
-    trades = find_received_trades(curState, country)
-    # calculate payout for each trade and store in (possiblePayouts = []) in ascending order
-    possiblePayouts = []
-    for trade in trades:
-        p = calculate_state_quality(trade) - calculate_state_quality(curState)
-        possiblePayouts.append(p)
-    possiblePayouts.sort()
-    # success rate is the relative position of (payout) in (possiblePayouts)
-    return (possiblePayouts.index(payout) + 1) / len(possiblePayouts)
-
 
 class World:
     def __init__(self, myCountry, transform_templates):

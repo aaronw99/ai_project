@@ -19,6 +19,7 @@ factories = {
     "out": {"R1'": 80, "R5'": 10, "R6'": 5, 'R22': 1, "R22'": 5}
 }
 
+
 '''
 Notes about templates:
 * housing, alloys, electronics are as provided by Dr. Fisher's spec
