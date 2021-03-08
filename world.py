@@ -5,6 +5,8 @@ import random
 import numpy as np
 
 # util
+
+
 def calculate_transform_max_multiplier(resources, template):
     multiplier = -1
     inputs = template["in"]
@@ -16,9 +18,11 @@ def calculate_transform_max_multiplier(resources, template):
                 resources[r_type] / inputs[r_type]))
     return multiplier
 
+
 def logistic(payout, k, L):
     #print("payout: ", payout, " denom: ", np.exp(-k * payout), " p: ", L / (1 + np.exp(-k * payout)))
     return L / (1 + np.exp(-k * payout))
+
 
 def calculate_success_probability(myCountry, curState, nextState, action):
     if isinstance(action, Transfer):
@@ -29,7 +33,8 @@ def calculate_success_probability(myCountry, curState, nextState, action):
             otherCountry = fromCountry
         else:
             otherCountry = toCountry
-        payout = calculate_state_quality(nextState, otherCountry) - calculate_state_quality(curState, otherCountry)
+        payout = calculate_state_quality(
+            nextState, otherCountry) - calculate_state_quality(curState, otherCountry)
         return logistic(payout, 1, 1)
     if isinstance(action, Transform):
         return 1
@@ -77,6 +82,23 @@ def calculate_state_quality(state: dict, country: str):
         return normalized - 1000
     else:
         return normalized
+
+# creates a generates the optimal trade
+
+
+def run_transfer(state, resources, resource_type, country_from, country_to):
+    # list of resources and wastes that are impractical for trading
+    untradeable_resources = ['R1', 'R4', 'R7', 'R19', 'R21', 'R22',
+                             "R1'", "R5'", "R6'", "R18'", "R19'", "R20'", "R21'", "R22'"]
+    if resource_type in untradeable_resources:
+        return 0, 0
+    amount = resources[resource_type]
+    if amount:
+        transfer = Transfer(
+            state, country_from, country_to, (resource_type, random.randint(1, amount)))
+        return transfer.execute(), transfer
+    else:
+        return 0, 0
 
 
 class World:
@@ -135,23 +157,17 @@ class World:
                 theirResources = state[country]
                 # for each resource in self.myCountry, randomly generate some transfer operations
                 for r_type in myResources:
-                    amount = myResources[r_type]
-                    if amount and r_type != "R1":
-                        transfer = Transfer(
-                            state, self.myCountry, country, (r_type, random.randint(1, amount)))
-                        # print(transfer.toString())
-                        successors.append(
-                            [transfer.execute(), transfer])
+                    newState, transfer = run_transfer(
+                        state, myResources, r_type, self.myCountry, country)
+                    if newState and transfer:
+                        successors.append([newState, transfer])
                 # for each resource in other countries randomly generate some transfer operations
                 for r_type in theirResources:
-                    amount = theirResources[r_type]
-                    if amount and r_type != "R1":
-                        transfer = Transfer(
-                            state, country, self.myCountry, (r_type, random.randint(1, amount)))
-                        # print(transfer.toString())
-                        successors.append(
-                            [transfer.execute(), transfer])
-        return successors                        
+                    newState, transfer = run_transfer(
+                        state, theirResources, r_type, country, self.myCountry)
+                    if newState and transfer:
+                        successors.append([newState, transfer])
+        return successors
 
     def getExpectedUtility(self, curState, nextState, length, action):
         # calculate eu for self.myCountry
@@ -161,10 +177,12 @@ class World:
         reward = endQuality - startQuality
         #print("start:", startQuality, "end:", endQuality, "reward:", reward)
         discounted_reward = (gamma ** length) * reward
-        probability_success = calculate_success_probability(self.myCountry, curState, nextState, action)
+        probability_success = calculate_success_probability(
+            self.myCountry, curState, nextState, action)
         failure_cost = -discounted_reward / 2
         print("ds_reward: ", discounted_reward, " p: ", probability_success)
-        eu = probability_success * discounted_reward + (1 - probability_success) * failure_cost
+        eu = probability_success * discounted_reward + \
+            (1 - probability_success) * failure_cost
         return eu
 
 
