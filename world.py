@@ -113,7 +113,7 @@ class World:
                         successors.append([transfer.execute(), transfer.toString()])
                 #for each resource in other countries randomly generate some transfer operations
                 for r_type in theirResources:
-                    amount = myResources[r_type]
+                    amount = theirResources[r_type]
                     if amount and r_type != "R1":
                         transfer = Transfer(state, country, self.myCountry, (r_type, random.randint(1, amount)))
                         #print(transfer.toString())
