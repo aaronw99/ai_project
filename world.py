@@ -18,15 +18,39 @@ def calculate_state_quality(state: dict, country: str):
     country_resources = state[country]
     population = country_resources['R1']
 
-    resources_df = pd.read_excel('resources.xlsx')
+    # Calculate required amounts of resources for "survival" and "comfortable" level
+    survival = {'R2': 1.5, 'R3': 1, 'R4': 6, 'R5': 50, 'R6': 250, 'R7': 300, 'R8': 33, 'R9': 2.5, 'R18': 1.5, 'R19': .4, 'R20': 10, 'R21': 3,  'R22': 1}
+    comfortable = {'R2': 1.5, 'R3': 1, 'R4': 6, 'R5': 50, 'R6': 250, 'R7': 300, 'R8': 33, 'R9': 2.5, 'R18': 1.5, 'R19': .4, 'R20': 10, 'R21': 3,  'R22': 1}
+    for resource in survival.keys():
+        survival[resource] = survival[resource] * 0.2 * population
+        comfortable[resource] = comfortable[resource] * population
 
+    resources_df = pd.read_excel('resources.xlsx')
     weighted_sum = 0.0
+    below_survival = False
+
     for resource in country_resources.keys():
         resource_quantity = country_resources[resource]
         resource_value = resources_df[resources_df['Resources'] == resource]['Weight'].iloc[0]
-        weighted_sum = weighted_sum + (resource_quantity * resource_value)
+        above_comfortable = False
 
-    return weighted_sum / population
+        if resource in survival.keys():
+            if resource_quantity < int(survival[resource]):
+                below_survival = True
+            elif resource_quantity >= int(comfortable[resource]):
+                above_comfortable = True
+
+        if above_comfortable:
+            difference = resource_quantity - comfortable[resource]
+            weighted_sum = weighted_sum + (comfortable[resource] * resource_value) + (difference * resource_value / 2)
+        else:
+            weighted_sum = weighted_sum + (resource_quantity * resource_value)
+
+    normalized = weighted_sum / population
+    if below_survival:
+        return normalized - 1000
+    else:
+        return normalized
 
 class World:
     def __init__(self, myCountry, transform_templates):
