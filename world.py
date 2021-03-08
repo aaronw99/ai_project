@@ -1,5 +1,7 @@
 import pandas as pd
 from transform import Transform
+from transfer import Transfer
+import random
 
 # util
 
@@ -64,7 +66,7 @@ class World:
     def __init__(self, myCountry, transform_templates):
         self.myCountry = myCountry
         self.transform_templates = transform_templates
-        data = pd.read_excel('initial_state.xlsx')
+        data = pd.read_excel('test_initial_states/initial_state_6.xlsx')
         df = pd.DataFrame(data)
         # reformats in json style
         initial_state = {}
@@ -100,30 +102,48 @@ class World:
     def getSuccessors(self, state):
         successors = []
         myResources = state[self.myCountry]
-        # generate possible transforms
+        # generate random transforms for self.myCountry
         for template in self.transform_templates:
             # check maximum possible multipler
-            multiplier = calculate_transform_max_multiplier(
+            max_multiplier = calculate_transform_max_multiplier(
                 myResources, template)
-            # print(multiplier)
-            for i in range(1, multiplier + 1):
-                transform = Transform(state, self.myCountry, template, i)
+            # print(max_multiplier)
+            if max_multiplier:
+                transform = Transform(
+                    state, self.myCountry, template, random.randint(1, max_multiplier))
                 successors.append([transform.execute(), transform.toString()])
         # generate possible transfers
         for country in state:
             if country != self.myCountry:
                 theirResources = state[country]
-
+                # for each resource in self.myCountry, randomly generate some transfer operations
+                for r_type in myResources:
+                    amount = myResources[r_type]
+                    if amount and r_type != "R1":
+                        transfer = Transfer(
+                            state, self.myCountry, country, (r_type, random.randint(1, amount)))
+                        # print(transfer.toString())
+                        successors.append(
+                            [transfer.execute(), transfer.toString()])
+                # for each resource in other countries randomly generate some transfer operations
+                for r_type in theirResources:
+                    amount = theirResources[r_type]
+                    if amount and r_type != "R1":
+                        transfer = Transfer(
+                            state, country, self.myCountry, (r_type, random.randint(1, amount)))
+                        # print(transfer.toString())
+                        successors.append(
+                            [transfer.execute(), transfer.toString()])
         return successors
 
     def getExpectedUtility(self, state, length):
         # calculate eu for self.myCountry
         startQuality = calculate_state_quality(self.startState, self.myCountry)
         endQuality = calculate_state_quality(state, self.myCountry)
-        # add the expected utility function here
-        gamma = 0.9
+        gamma = 1
         reward = endQuality - startQuality
-        discounted_reward = gamma ** length * reward
+        #print("start:", startQuality, "end:", endQuality, "reward:", reward)
+        discounted_reward = (gamma ** length) * reward
         probability_success = 1
         failure_cost = 0
         eu = probability_success * discounted_reward + \

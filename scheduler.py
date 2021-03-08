@@ -42,32 +42,38 @@ class Scheduler:
         visited = []
         result = []
         maxUtility = float('-inf')
-        initialState = self.world.getStartState()
-        heapq.heappush(pq, (0, initialState, []))
+        startState = self.world.getStartState()
+        item = Item(0, startState, [])
+        heapq.heappush(pq, item)
         while pq:
+            # print(pq)
             cur = heapq.heappop(pq)
-            utility = cur[0]
-            state = cur[1]
-            schedule = cur[2]
+            utility = cur.getUtility()
+            state = cur.getState()
+            schedule = cur.getSchedule()
             # reaches maximum depth
             if len(schedule) == maxDepth:
-                if utility >= maxUtility:
+                if -1 * utility > maxUtility:
                     result = copy.deepcopy(schedule)
-                    maxUtility = utility
+                    maxUtility = -1 * utility
             # explores current state if new
-            if state not in visited:
-                visited.append(state)
-                # expands fringe
-                for successor in self.world.getSuccessors(state):
-                    nextState = successor[0]
-                    nextAction = successor[1]
-                    nextUtility = self.world.getExpectedUtility(
-                        nextState, len(schedule) + 1)
-                    nextSchedule = schedule + [[nextAction, nextUtility]]
-                    if nextState not in visited:
-                        heapq.heappush(
-                            pq, (-nextUtility, nextState, nextSchedule))
-                        # maintains a fix-sized heap
-                        if len(pq) > maxSize:
-                            heapq.heappop(pq)
+            else:
+                if state not in visited:
+                    visited.append(state)
+                    # expands fringe
+                    for successor in self.world.getSuccessors(state):
+                        nextState = successor[0]
+                        nextAction = successor[1]
+                        nextUtility = self.world.getExpectedUtility(
+                            nextState, len(schedule) + 1)
+                        #print(nextAction, "eu:", nextUtility)
+                        nextSchedule = schedule + [[nextAction, nextUtility]]
+                        nextItem = Item(-1 * nextUtility, nextState,
+                                        copy.deepcopy(nextSchedule))
+                        if nextState not in visited:
+                            heapq.heappush(pq, nextItem)
+                            # maintains a fix-sized heap
+                            if len(pq) > maxSize:
+                                pq.pop()
+                        # print(pq)
         return result
