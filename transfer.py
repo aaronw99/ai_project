@@ -19,3 +19,9 @@ class Transfer:
         quantity = self.trade[1]
         string = "(TRANSFER " + self.country_1 + " " + self.country_2 + " (" + type + " " + str(quantity) + "))"
         return string
+    
+    def isFrom(self):
+        return self.country_1
+    
+    def isTo(self):
+        return self.country_2

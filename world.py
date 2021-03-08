@@ -2,10 +2,9 @@ import pandas as pd
 from transform import Transform
 from transfer import Transfer
 import random
+import numpy as np
 
 # util
-
-
 def calculate_transform_max_multiplier(resources, template):
     multiplier = -1
     inputs = template["in"]
@@ -16,6 +15,24 @@ def calculate_transform_max_multiplier(resources, template):
             multiplier = min(multiplier, int(
                 resources[r_type] / inputs[r_type]))
     return multiplier
+
+def logistic(payout, k, L):
+    #print("payout: ", payout, " denom: ", np.exp(-k * payout), " p: ", L / (1 + np.exp(-k * payout)))
+    return L / (1 + np.exp(-k * payout))
+
+def calculate_success_probability(myCountry, curState, nextState, action):
+    if isinstance(action, Transfer):
+        fromCountry = action.isFrom()
+        toCountry = action.isTo()
+        otherCountry = ""
+        if fromCountry != myCountry:
+            otherCountry = fromCountry
+        else:
+            otherCountry = toCountry
+        payout = calculate_state_quality(nextState, otherCountry) - calculate_state_quality(curState, otherCountry)
+        return logistic(payout, 1, 1)
+    if isinstance(action, Transform):
+        return 1
 
 
 def calculate_state_quality(state: dict, country: str):
@@ -66,7 +83,7 @@ class World:
     def __init__(self, myCountry, transform_templates):
         self.myCountry = myCountry
         self.transform_templates = transform_templates
-        data = pd.read_excel('initial_state.xlsx')
+        data = pd.read_excel('test_initial_states/initial_state_3.xlsx')
         df = pd.DataFrame(data)
         # reformats in json style
         initial_state = {}
@@ -111,7 +128,7 @@ class World:
             if max_multiplier:
                 transform = Transform(
                     state, self.myCountry, template, random.randint(1, max_multiplier))
-                successors.append([transform.execute(), transform.toString()])
+                successors.append([transform.execute(), transform])
         # generate possible transfers
         for country in state:
             if country != self.myCountry:
@@ -124,7 +141,7 @@ class World:
                             state, self.myCountry, country, (r_type, random.randint(1, amount)))
                         # print(transfer.toString())
                         successors.append(
-                            [transfer.execute(), transfer.toString()])
+                            [transfer.execute(), transfer])
                 # for each resource in other countries randomly generate some transfer operations
                 for r_type in theirResources:
                     amount = theirResources[r_type]
@@ -133,21 +150,21 @@ class World:
                             state, country, self.myCountry, (r_type, random.randint(1, amount)))
                         # print(transfer.toString())
                         successors.append(
-                            [transfer.execute(), transfer.toString()])
-        return successors
+                            [transfer.execute(), transfer])
+        return successors                        
 
-    def getExpectedUtility(self, state, length):
+    def getExpectedUtility(self, curState, nextState, length, action):
         # calculate eu for self.myCountry
         startQuality = calculate_state_quality(self.startState, self.myCountry)
-        endQuality = calculate_state_quality(state, self.myCountry)
+        endQuality = calculate_state_quality(nextState, self.myCountry)
         gamma = 1
         reward = endQuality - startQuality
         #print("start:", startQuality, "end:", endQuality, "reward:", reward)
         discounted_reward = (gamma ** length) * reward
-        probability_success = 1
-        failure_cost = 0
-        eu = probability_success * discounted_reward + \
-            (1 - probability_success) * failure_cost
+        probability_success = calculate_success_probability(self.myCountry, curState, nextState, action)
+        failure_cost = -discounted_reward / 2
+        print("ds_reward: ", discounted_reward, " p: ", probability_success)
+        eu = probability_success * discounted_reward + (1 - probability_success) * failure_cost
         return eu
 
 

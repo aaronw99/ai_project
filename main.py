@@ -2,14 +2,15 @@ from scheduler import Scheduler
 from world import World
 from templates import housing, alloys, electronics, farms, factories
 
-transform_templates = [housing, alloys, electronics]
+transform_templates = [housing, alloys, electronics, farms, factories]
 myCountry = "Atlantis"
 world = World(myCountry, transform_templates)
 
 scheduler = Scheduler(world)
-maxDepth = 5
+maxDepth = 3
 maxSize = 10
 schedule = scheduler.search(maxDepth, maxSize)
+print("Best Schedule: ")
 for step in schedule:
     action = step[0]
     eu = step[1]

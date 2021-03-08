@@ -64,10 +64,9 @@ class Scheduler:
                     for successor in self.world.getSuccessors(state):
                         nextState = successor[0]
                         nextAction = successor[1]
-                        nextUtility = self.world.getExpectedUtility(
-                            nextState, len(schedule) + 1)
-                        #print(nextAction, "eu:", nextUtility)
-                        nextSchedule = schedule + [[nextAction, nextUtility]]
+                        nextUtility = self.world.getExpectedUtility(state, nextState, len(schedule) + 1, nextAction)
+                        print(nextAction.toString(), "eu:", nextUtility)
+                        nextSchedule = schedule + [[nextAction.toString(), nextUtility]]
                         nextItem = Item(-1 * nextUtility, nextState,
                                         copy.deepcopy(nextSchedule))
                         if nextState not in visited:
