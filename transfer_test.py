@@ -10,7 +10,7 @@ myCountry = "Atlantis"
 world = World(myCountry, transform_templates)
 startState = world.getStartState()
 print(startState)
-startstate = world.getStartState
+startstate = world.getStartState()
 
 transfer = Transfer(startState, country1, country2, ("R1", 5))
 print(transfer.toString())
