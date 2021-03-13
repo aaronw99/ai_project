@@ -1,8 +1,8 @@
 # This file contains a list of templates for the transform operations
-# note: we do not wish to simulate population changes in part 1 so
-#       R1 in all templates only acts as an entry constraint. i.e. 
-#       we want a country to have at least 80 units of population in order to
-#       perform one factory transform
+# note: we do not wish to simulate certain resource changes such as population
+#       in part 1 so those resources in all templates only acts as an entry 
+#       constraint. i.e. we want a country to have at least 80 units of 
+#       population in order to perform one factory transform
 housing = {
     "in": {"R1": 5, "R2": 1, "R3": 5, "R4": 1, "R18": 3},
     "out": {"R1": 5, "R19": 1, "R19'": 1}
@@ -32,6 +32,11 @@ metallic_elements = {
 timber = {
     "in": {"R1": 4, "R4": 1},
     "out": {"R1": 4, "R3": 90, "R4": 1}
+}
+# this template is inspired by group 7's presentation
+plant = {
+    "in": {"R1": 4, "R21": 1, "R7": 2},
+    "out": {"R1": 4, "R21": 1, "R9": 13, "R21": 2}
 }
 
 

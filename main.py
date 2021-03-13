@@ -1,6 +1,6 @@
 from scheduler import Scheduler
 from world import World
-from templates import housing, alloys, electronics, farms, factories, metallic_elements, timber
+from templates import housing, alloys, electronics, farms, factories, metallic_elements, timber, plant
 import utils
 import heapq
     
@@ -11,7 +11,7 @@ def my_country_scheduler (your_country_name,
                           num_output_schedules, 
                           depth_bound, 
                           frontier_max_size):
-    transform_templates = [housing, alloys, electronics, farms, factories, metallic_elements, timber]
+    transform_templates = [housing, alloys, electronics, farms, factories, metallic_elements, timber, plant]
     world = World(your_country_name, transform_templates, initial_state_filename, resources_filename)  
     scheduler = Scheduler(world)
     res = scheduler.search(depth_bound, frontier_max_size)
