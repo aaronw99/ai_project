@@ -13,11 +13,11 @@ class Template:
     }
     farms = {
         "in": {'R1': 1, 'R4': 1, 'R7': 5, 'R8': 1, 'R9': 3},
-        "out": {"R1'": 1, 'R21': 1, "R21'": 5}
+        "out": {'R1': 1, 'R21': 1, "R21'": 5}
     }
     factories = {
-        "in": {'R1': 80, 'R3': 1, 'R4': 1, 'R5': 10, 'R6': 5, 'R7': 3},
-        "out": {"R1'": 80, "R5'": 10, "R6'": 5, 'R22': 1, "R22'": 5}
+        "in": {'R1': 5, 'R3': 1, 'R4': 1, 'R5': 10, 'R6': 5, 'R7': 3},
+        "out": {'R1': 5, "R5'": 10, "R6'": 5, 'R22': 1, "R22'": 5}
     }
     # taken from Group 1: represents metallic elements being excavated from the earth
     metallic_elements = {
@@ -25,11 +25,11 @@ class Template:
         "out": {'R1': 2, 'R2': 20, 'R4': 0}
     }
 
-    # taken from Group 1; 
+    # taken from Group 1;
     # source: https://www.forest2market.com/blog/how-many-tons-of-wood-are-on-an-acre-of-land#:~:text=Forest2Market%20data%20from%20timberland%20type,clearcut%3A%2099%20tons%20per%20acre
     timber = {
         "in": {'R1': 4, 'R4': 1},
-        "out": {'R1':4, 'R3': 90, 'R4': 1}
+        "out": {'R1': 4, 'R3': 90, 'R4': 1}
     }
 
 
