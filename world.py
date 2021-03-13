@@ -83,7 +83,6 @@ def calculate_state_quality(state: dict, country: str):
     else:
         return normalized
 
-# creates a generates the optimal trade
 
 
 def run_transfer(state, resources, resource_type, country_from, country_to):

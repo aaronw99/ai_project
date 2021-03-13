@@ -1,8 +1,8 @@
 from scheduler import Scheduler
 from world import World
-from templates import housing, alloys, electronics, farms, factories
+from templates import housing, alloys, electronics, farms, factories, metallic_elements, timber
 
-transform_templates = [housing, alloys, electronics, farms, factories]
+transform_templates = [housing, alloys, electronics, farms, factories, metallic_elements, timber]
 myCountry = "Atlantis"
 world = World(myCountry, transform_templates)
 

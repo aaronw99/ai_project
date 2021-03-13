@@ -1,6 +1,50 @@
+import math
+from world import World
+from templates import housing, alloys, electronics, farms, factories, metallic_elements, timber
+
 # For survival thresholds, multiply each by .20
 comfortable_thresholds = {'R2': 1.5, 'R3': 1, 'R4': 6, 'R5': 50, 'R6': 250, 'R7': 300,
                           'R8': 33, 'R9': 2.5, 'R18': 1.5, 'R19': .4, 'R20': 10, 'R21': 3,  'R22': 1}
+
+# returns [resource w/ highest need, score, resource w/ lowest need, score]
+
+
+def threshold_score(thresholds, resources):
+    min_score = math.inf
+    min_resource = 'R2'
+    max_score = -math.inf
+    max_resource = 'R2'
+    for r in resources:
+        r_level = resources[r]
+        try:
+            comfortable_rate = thresholds[r]
+        except:
+            continue
+        survival_rate = comfortable_rate * 0.2
+        base = 100
+        # sub-survival
+        if r_level < survival_rate:
+            base = 0 - ((survival_rate / r_level) * 100)
+        elif r_level < comfortable_rate:
+            base -= ((survival_rate / r_level) * 100)
+        else:
+            base += (r_level / comfortable_rate * 100)
+
+        if base < min_score:
+            min_score = base
+            min_resource = r
+        elif base > max_score:
+            max_score = base
+            max_resource = r
+    return [min_resource, min_score, max_resource, max_score]
+
+
+transform_templates = [housing, alloys, electronics, farms, factories, metallic_elements, timber]
+myCountry = "Atlantis"
+world = World(myCountry, transform_templates)
+startState = world.getStartState()
+print(startState[myCountry])
+print(threshold_score(comfortable_thresholds, startState[myCountry]))
 
 
 '''
