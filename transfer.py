@@ -1,6 +1,6 @@
 import copy
 
-
+# The Transfer class represents the singleton transfer operation
 class Transfer:
     def __init__(self, state, country_from, country_to, trade):
         self.state = copy.deepcopy(state)

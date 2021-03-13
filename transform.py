@@ -1,5 +1,6 @@
 import copy
 
+# The Transform class represents the transform operation
 class Transform:
     def __init__(self, state, country, template, multiplier = 1):
         self.state = copy.deepcopy(state)
