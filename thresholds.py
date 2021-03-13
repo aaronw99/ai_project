@@ -1,6 +1,6 @@
 import math
 from world import World
-from templates import housing, alloys, electronics, farms, factories
+from templates import housing, alloys, electronics, farms, factories, metallic_elements, timber
 
 # For survival thresholds, multiply each by .20
 comfortable_thresholds = {'R2': 1.5, 'R3': 1, 'R4': 6, 'R5': 50, 'R6': 250, 'R7': 300,
@@ -39,7 +39,7 @@ def threshold_score(thresholds, resources):
     return [min_resource, min_score, max_resource, max_score]
 
 
-transform_templates = [housing, alloys, electronics, farms, factories]
+transform_templates = [housing, alloys, electronics, farms, factories, metallic_elements, timber]
 myCountry = "Atlantis"
 world = World(myCountry, transform_templates)
 startState = world.getStartState()
