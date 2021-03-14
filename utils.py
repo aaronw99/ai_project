@@ -9,6 +9,8 @@ from thresholds import comfortable_level
 # to a country given their resources
 # @resources(dict): a list of resources with their corresponding quantity
 # @template(dict): a transform template
+
+
 def calculate_transform_max_multiplier(resources, template):
     multiplier = -1
     inputs = template["in"]
@@ -16,20 +18,23 @@ def calculate_transform_max_multiplier(resources, template):
     for r_type in inputs:
         if r_type in comfortable_level.keys():
             # makes sure that transform does not make certain resources go below survival level
-            available = resources[r_type] - int(comfortable_level[r_type] * population * 0.2)
-            #print(available)
+            available = resources[r_type] - \
+                int(comfortable_level[r_type] * population * 0.2)
+            # print(available)
             if available > 0:
                 if multiplier == -1:
                     multiplier = int(available / inputs[r_type])
                 else:
-                    multiplier = min(multiplier, int(available / inputs[r_type]))
+                    multiplier = min(multiplier, int(
+                        available / inputs[r_type]))
             else:
                 multiplier = 0
         else:
             if multiplier == -1:
                 multiplier = int(resources[r_type] / inputs[r_type])
             else:
-                multiplier = min(multiplier, int(resources[r_type] / inputs[r_type]))
+                multiplier = min(multiplier, int(
+                    resources[r_type] / inputs[r_type]))
     return multiplier
 
 # logistic
@@ -37,6 +42,8 @@ def calculate_transform_max_multiplier(resources, template):
 # @payout(int): the payout of a transfer operation which acts as the x param
 # @k(int): param k as seen in the sigmoid function definition
 # @L(int): param L as seen in the sigmoid function definition
+
+
 def logistic(payout, k, L):
     #print("payout: ", payout, " denom: ", np.exp(-k * payout), " p: ", L / (1 + np.exp(-k * payout)))
     return L / (1 + np.exp(-k * payout))
@@ -48,6 +55,8 @@ def logistic(payout, k, L):
 # @nextState(dict): the world state after executing the given action
 # @actioon(obk): a transfer or transform operation
 # @resourceWeightPath(str): the path to the resource weight file
+
+
 def calculate_success_probability(myCountry, curState, nextState, action, resourceWeightPath):
     # if the action is transfer, the success rate is calculated based on the payout
     # with respect to the other country
@@ -71,20 +80,23 @@ def calculate_success_probability(myCountry, curState, nextState, action, resour
 # @state(dict): the world state
 # @country(str): the name of our country
 # @path(str): the path to the weight file
+
+
 def calculate_state_quality(state, country, path):
     country_resources = state[country]
     population = country_resources["R1"]
 
-    # Calculate required amounts of resources for "survival" and "comfortable" level  
+    # Calculate required amounts of resources for "survival" and "comfortable" level
     survival = {}
-    comfortable = {}    
+    comfortable = {}
     for resource in comfortable_level.keys():
-        survival[resource] = int(comfortable_level[resource] * 0.2 * population)
+        survival[resource] = int(
+            comfortable_level[resource] * 0.2 * population)
         comfortable[resource] = int(comfortable_level[resource] * population)
-    
-    #print(survival)
-    #print(comfortable)
-    
+
+    # print(survival)
+    # print(comfortable)
+
     resources_df = pd.read_excel(path)
     weighted_sum = 0.0
     below_survival = False
@@ -122,8 +134,11 @@ def calculate_state_quality(state, country, path):
 # b) exporting resources that we have in extra
 # @state(dict): the world state
 # @myCountry(str): the name of our country
+
+
 def generate_trades(state, myCountry):
-    countryList = ["Atlantis", "Brobdingnag", "Carpania", "Dinotopia", "Erewhon"]
+    countryList = ["Atlantis", "Brobdingnag",
+                   "Carpania", "Dinotopia", "Erewhon"]
     # list of resources and wastes that are impractical for trading, at least for part 1
     untradeable_resources = ['R1', 'R4', 'R7', 'R19', 'R21', 'R22',
                              "R1'", "R5'", "R6'", "R18'", "R19'", "R20'", "R21'", "R22'"]
@@ -136,11 +151,13 @@ def generate_trades(state, myCountry):
         for r_type in comfortable_level:
             if r_type not in untradeable_resources:
                 if resources[r_type] - int(comfortable_level[r_type] * population) < 0:
-                    demand[country][r_type] = int(comfortable_level[r_type] * population) - resources[r_type]
+                    demand[country][r_type] = int(
+                        comfortable_level[r_type] * population) - resources[r_type]
                 if resources[r_type] - int(comfortable_level[r_type] * population * 0.2) < 0:
-                    demand[country][r_type] = int(comfortable_level[r_type] * population * 0.2) - resources[r_type]
+                    demand[country][r_type] = int(
+                        comfortable_level[r_type] * population * 0.2) - resources[r_type]
     #print("demands: ", demand)
-    
+
     trades = []
     # generate imports based on our demand
     for r_type in demand[myCountry]:
@@ -148,18 +165,19 @@ def generate_trades(state, myCountry):
         for country in countryList:
             if country != myCountry:
                 if state[country][r_type] != 0:
-                    # we force all countries to trade with us for part 1 even if 
-                    # the resource that we want is below their survival level. 
-                    # Although if that is the case, the amount that they are 
+                    # we force all countries to trade with us for part 1 even if
+                    # the resource that we want is below their survival level.
+                    # Although if that is the case, the amount that they are
                     # willing to give us is 20% of what they have
-                    theirSupply = int(state[country][r_type] / 5) if state[country][r_type] <= int(comfortable_level[r_type] * state[country]["R1"] * 0.2) else state[country][r_type] - int(comfortable_level[r_type] * state[country]["R1"] * 0.2)
+                    theirSupply = int(state[country][r_type] / 5) if state[country][r_type] <= int(comfortable_level[r_type] * state[country]
+                                                                                                   ["R1"] * 0.2) else state[country][r_type] - int(comfortable_level[r_type] * state[country]["R1"] * 0.2)
                     amount = myDemand if myDemand < theirSupply else theirSupply
                     if amount == 0:
                         continue
                     content = (r_type, amount)
                     importTrade = Transfer(state, country, myCountry, content)
                     trades.append(importTrade)
-                    
+
     # generate exports based on others' demand
     for country in demand:
         if country != myCountry:
@@ -168,27 +186,33 @@ def generate_trades(state, myCountry):
                 # we do not want our country to export resources that it is already
                 # in shortage of for part 1
                 if r_type not in demand[myCountry]:
-                    mySupply = state[myCountry][r_type] - int(comfortable_level[r_type] * state[myCountry]["R1"] * 0.2)
+                    mySupply = state[myCountry][r_type] - \
+                        int(comfortable_level[r_type] *
+                            state[myCountry]["R1"] * 0.2)
                     amount = theirDemand if theirDemand < mySupply else mySupply
                     if amount == 0:
                         continue
                     content = (r_type, amount)
                     exportTrade = Transfer(state, myCountry, country, content)
                     trades.append(exportTrade)
-                           
-    return trades    
+
+    return trades
 
 # write_to_file
 # this writes the schedule to the given output file
 # @path(str): the path to the output file
 # @schedule(list): the schedule
-def write_to_file(path, schedule):
-    output_file = open(path, "w")
+
+
+def write_to_file(path, schedule, schedule_num):
+    output_file = open(path, "a")
+    output_file.write("Schedule " + str(schedule_num) + "\n")
     for step in schedule:
         action = step[0]
-        eu = step[1]                            
+        eu = step[1]
         line = str(action) + " EU: " + str(eu)
         print(line)
         output_file.write(line)
         output_file.write("\n")
+    output_file.write("\n")
     output_file.close()

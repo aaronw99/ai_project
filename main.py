@@ -3,16 +3,20 @@ from world import World
 from templates import housing, alloys, electronics, farms, factories, metallic_elements, timber, plant
 import utils
 import heapq
-    
-def my_country_scheduler (your_country_name, 
-                          resources_filename,  
-                          initial_state_filename, 
-                          output_schedule_filename, 
-                          num_output_schedules, 
-                          depth_bound, 
-                          frontier_max_size):
-    transform_templates = [housing, alloys, electronics, farms, factories, metallic_elements, timber, plant]
-    world = World(your_country_name, transform_templates, initial_state_filename, resources_filename)  
+import time
+
+
+def my_country_scheduler(your_country_name,
+                         resources_filename,
+                         initial_state_filename,
+                         output_schedule_filename,
+                         num_output_schedules,
+                         depth_bound,
+                         frontier_max_size):
+    transform_templates = [housing, alloys, electronics,
+                           farms, factories, metallic_elements, timber, plant]
+    world = World(your_country_name, transform_templates,
+                  initial_state_filename, resources_filename)
     scheduler = Scheduler(world)
     res = scheduler.search(depth_bound, frontier_max_size)
     print("-----------------------------------------")
@@ -20,16 +24,22 @@ def my_country_scheduler (your_country_name,
     for i in range(0, num_output_schedules):
         print("Schedule", i + 1)
         schedule = heapq.heappop(res).getSchedule()
-        utils.write_to_file(output_schedule_filename, schedule)
+        utils.write_to_file(output_schedule_filename, schedule, i + 1)
         print("-----------------------------------------")
 
+
 myCountry = "Atlantis"
-initialStatePath = "test_initial_states/initial_state_5.xlsx"
+initialStatePath = "test_initial_states/initial_state_8.xlsx"
+initialStateNum = "8"
 resourceWeightPath = "resources.xlsx"
-output = "results.txt"
+output = "results_initial_state_" + initialStateNum + ".txt"
 numOutput = 10
 depth = 5
 width = 10
 
-my_country_scheduler(myCountry, resourceWeightPath, initialStatePath, output, numOutput, depth, width)
-    
+startTime = time.time()
+my_country_scheduler(myCountry, resourceWeightPath,
+                     initialStatePath, output, numOutput, depth, width)
+endTime = time.time()
+
+print("Time elapsed: " + str(endTime - startTime) + " seconds")
