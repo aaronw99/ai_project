@@ -1,0 +1,5 @@
+Run time for expriment 1: 36.83986020088196 seconds
+Run time for expriment 1: 708.3752999305725 seconds
+Run time for expriment 1: 209.2821009159088 seconds
+Run time for expriment 1: 71.62211990356445 seconds
+Run time for expriment 1: 38.817617893218994 seconds

@@ -32,7 +32,7 @@ def my_country_scheduler(your_country_name,
 
 myCountry = "Atlantis"
 # change this value to run on different states
-initialStateNum = "1"
+initialStateNum = "2"
 initialStatePath = "test_initial_states/initial_state_" + initialStateNum + ".xlsx"
 resourceWeightPath = "resources.xlsx"
 output = "results/" + initialStateNum + "/schedules_"
