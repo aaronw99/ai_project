@@ -50,7 +50,7 @@ startTime = time.time()
 my_country_scheduler(myCountry, resourceWeightPath,
                      initialStatePath, output + "_1.txt", numOutput, 5, 5, 0.5)
 endTime = time.time()
-timeFile.write("Run time for expriment 1: " +
+timeFile.write("Run time for experiment 1: " +
                str(endTime - startTime) + " seconds")
 timeFile.write("\n")
 print("Time elapsed: " + str(endTime - startTime) + " seconds")
