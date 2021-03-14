@@ -1,0 +1,5 @@
+Run time for experiment 1: 43.30790328979492 seconds
+Run time for experiment 2: 157.34895181655884 seconds
+Run time for experiment 3: 99.63761401176453 seconds
+Run time for experiment 4: 42.833590030670166 seconds
+Run time for experiment 5: 42.656301736831665 seconds
