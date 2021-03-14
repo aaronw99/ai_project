@@ -63,7 +63,7 @@ class Scheduler:
     # with a depth limit and a frontier limit
     # @maxDepth(int): the max depth
     # @maxSize(int): the frontier width
-    def search(self, maxDepth, maxSize):
+    def search(self, maxDepth, maxSize, multiplier):
         pq = []
         visited = []
         result = []
@@ -91,7 +91,7 @@ class Scheduler:
                     for successor in self.world.getSuccessors(state):
                         nextState = successor[0]
                         nextAction = successor[1]
-                        nextUtility = self.world.getExpectedUtility(state, nextState, len(schedule) + 1, nextAction)
+                        nextUtility = self.world.getExpectedUtility(state, nextState, len(schedule) + 1, nextAction, multiplier)
                         print(nextAction.toString(), "eu:", nextUtility)
                         nextSchedule = schedule + [[nextAction.toString(), nextUtility]]
                         nextItem = Item(-1 * nextUtility, nextState,

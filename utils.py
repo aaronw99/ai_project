@@ -203,7 +203,6 @@ def generate_trades(state, myCountry):
 # @path(str): the path to the output file
 # @schedule(list): the schedule
 
-
 def write_to_file(path, schedule, schedule_num):
     output_file = open(path, "a")
     output_file.write("Schedule " + str(schedule_num) + "\n")

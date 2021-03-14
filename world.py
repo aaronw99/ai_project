@@ -79,7 +79,8 @@ class World:
     # @nextState(dict): the world state after executing the given action
     # @length(int): the length of the partial schedule
     # @action(obj): a single transfer or transform operation
-    def getExpectedUtility(self, curState, nextState, length, action):
+    # @multiplier(float): the multiplier for failure cost
+    def getExpectedUtility(self, curState, nextState, length, action, multiplier):
         startQuality = utils.calculate_state_quality(self.startState, self.myCountry, self.resourceWeightPath)
         endQuality = utils.calculate_state_quality(nextState, self.myCountry, self.resourceWeightPath)
         # we use a gamma of 0.95 for now to represent diminishing returns
@@ -89,7 +90,7 @@ class World:
         discounted_reward = (gamma ** length) * reward
         probability_success = utils.calculate_success_probability(
             self.myCountry, curState, nextState, action, self.resourceWeightPath)
-        failure_cost = -discounted_reward / 2
+        failure_cost = -discounted_reward * multiplier
         print("discounted reward:", discounted_reward, "p:", probability_success)
         eu = probability_success * discounted_reward + \
             (1 - probability_success) * failure_cost

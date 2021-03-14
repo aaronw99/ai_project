@@ -36,7 +36,7 @@ timber = {
 # this template is inspired by group 7's presentation
 plant = {
     "in": {"R1": 4, "R21": 1, "R7": 2},
-    "out": {"R1": 4, "R21": 1, "R9": 13, "R21": 2}
+    "out": {"R1": 4, "R21": 1, "R9": 13, "R21'": 2}
 }
 
 
