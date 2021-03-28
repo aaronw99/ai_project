@@ -1,5 +1,4 @@
-import copy
-
+#work in progress
 class Order:
     def __init__(self, quantity: int, strike: float, name: str, expiration = -1):
         self.quantity = quantity
