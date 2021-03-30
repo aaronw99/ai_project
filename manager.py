@@ -8,7 +8,7 @@ class Manager:
     
     def addPlayer(self, player, initialState):
         self.players.append(player)
-        self.world.append({player.getName(): initialState})
+        self.world[player.getName()] = initialState
     
     def playOneRound(self):
         for player in self.players:
@@ -16,3 +16,6 @@ class Manager:
             for action in actions:
                 action.execute()
         self.market.settle()
+    
+    def getWorldState(self):
+        return self.world
