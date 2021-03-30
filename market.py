@@ -1,9 +1,9 @@
 #work in progress
 class Order:
-    def __init__(self, quantity: int, strike: float, name: str, expiration = -1):
+    def __init__(self, quantity: int, name: str, strike = -1, expiration = -1):
         self.quantity = quantity
-        self.strike = strike
         self.name = name
+        self.strike = strike
         self.expiration = expiration
     
     def __lt__(self, other):
@@ -30,6 +30,12 @@ class Order:
     def getStrike(self):
         return self.strike
     
+    def getExpiration(self):
+        return self.expiration
+    
+    def getName(self):
+        return self.name
+    
     def toString(self):
         output = "Strike: " + str(self.strike) + ". Quantity: " + str(self.quantity) + ". "
         if self.expiration != -1:
@@ -39,10 +45,11 @@ class Order:
 
 #work in progress
 class Market:
-    def __init__(self):
-        self.inventory = {}
+    def __init__(self, world):
         self.bids = {}
         self.asks = {}
+        self.buyers = {}
+        self.sellers = {}
         
     def submitLimitBuy(self, orders: dict, name: str):
         for ticker in orders.keys():
@@ -52,7 +59,7 @@ class Market:
             for order in orders[ticker]:
                 quantity = order["quantity"]
                 strike = order["strike"]
-                limitBuyOrder = Order(quantity, strike, name)
+                limitBuyOrder = Order(quantity, name, strike)
                 if "expiration" in order.keys():
                     limitBuyOrder.setExpiration(order["expiration"])
                 liquidity.append(limitBuyOrder)
@@ -66,62 +73,84 @@ class Market:
             for order in orders[ticker]:
                 quantity = order["quantity"]
                 strike = order["strike"]
-                limitSellOrder = Order(quantity, strike, name)
+                limitSellOrder = Order(quantity, name, strike)
                 if "expiration" in order.keys():
                     limitSellOrder.setExpiration(order["expiration"])
                 liquidity.append(limitSellOrder)
                 liquidity.sort()
-
+    
     def submitMarketBuy(self, orders: dict, name: str):
         for ticker in orders.keys():
-            fillQuantity = orders[ticker]
-            liquidity = self.asks[ticker]
-            lastPrice = -1
-            while liquidity and fillQuantity > 0:
-                quantity = liquidity[0].getQuantity()
-                lastPrice = liquidity[0].getStrike()
-                if fillQuantity > quantity:
-                    #todo: modify state
-                    fillQuantity = fillQuantity - quantity
-                    liquidity.pop(0)
-                else:
-                    liquidity[0].setQuantity(quantity - fillQuantity)
-                    fillQuantity = 0
-            if fillQuantity != 0:
-                #note: for now, if a market buy order cannot be fully filled,
-                #      the rest will be converted to a limit buy order with
-                #      the last executed price being the strike
-                limitBuyOrder = Order(fillQuantity, lastPrice, name)
-                if "expiration" in orders.keys():
-                    limitBuyOrder.setExpiration(orders["expiration"])
-                self.bids[ticker].append(limitBuyOrder)
-                self.bids[ticker].sort(reverse = True)
+                quantity = orders[ticker]["quantity"]
+                marketBuyOrder = Order(quantity, name)
+                if "expiration" in orders[ticker].keys():
+                    marketBuyOrder.setExpiration(orders[ticker]["expiration"])
+                if ticker not in self.buyers:
+                    self.buyers[ticker] = []
+                self.buyers[ticker].append(marketBuyOrder)
                 
-            
     def submitMarketSell(self, orders: dict, name: str):
         for ticker in orders.keys():
-            fillQuantity = orders[ticker]
-            liquidity = self.bids[ticker]
-            lastPrice = -1
-            while liquidity and fillQuantity > 0:
-                quantity = liquidity[0].getQuantity()
-                lastPrice = liquidity[0].getStrike()
-                if fillQuantity > quantity:
-                    #todo: modify state
-                    fillQuantity = fillQuantity - quantity
-                    liquidity.pop(0)
-                else:
-                    liquidity[0].setQuantity(quantity - fillQuantity)
-                    fillQuantity = 0
-            if fillQuantity != 0:
-                #note: for now, if a market sell order cannot be fully filled,
-                #      the rest will be converted to a limit sell order with
-                #      the last executed price being the strike
-                limitSellOrder = Order(fillQuantity, lastPrice, name)
-                if "expiration" in orders.keys():
-                    limitSellOrder.setExpiration(orders["expiration"])
-                self.asks[ticker].append(limitSellOrder)
-                self.asks[ticker].sort()
+                quantity = orders[ticker]["quantity"]
+                marketSellOrder = Order(quantity, name)
+                if "expiration" in orders[ticker].keys():
+                    marketSellOrder.setExpiration(orders[ticker]["expiration"])
+                if ticker not in self.sellers:
+                    self.sellers[ticker] = []
+                self.sellers[ticker].append(marketSellOrder)
+
+    def executeMarketBuy(self):
+        for ticker in self.buyers.keys():
+            for order in self.buyers[ticker]:
+                fillQuantity = order.getQuantity()
+                liquidity = self.asks[ticker]
+                lastPrice = self.quotePrice(ticker)["buyPrice"]
+                while liquidity and fillQuantity > 0:
+                    quantity = liquidity[0].getQuantity()
+                    lastPrice = liquidity[0].getStrike()
+                    if fillQuantity > quantity:
+                        #todo: modify state
+                        fillQuantity = fillQuantity - quantity
+                        liquidity.pop(0)
+                    else:
+                        liquidity[0].setQuantity(quantity - fillQuantity)
+                        fillQuantity = 0
+                if fillQuantity != 0:
+                    #note: for now, if a market buy order cannot be fully filled,
+                    #      the rest will be converted to a limit buy order with
+                    #      the last executed price being the strike
+                    limitBuyOrder = Order(fillQuantity, lastPrice, order.getName(), order.getExpiration())
+                    self.bids[ticker].append(limitBuyOrder)
+                    self.bids[ticker].sort(reverse = True)
+            
+    def executeMarketSell(self):
+        for ticker in self.sellers.keys():
+            for order in self.sellers[ticker]:
+                fillQuantity = order.getQuantity()
+                liquidity = self.bids[ticker]
+                lastPrice = self.quotePrice(ticker)["sellPrice"]
+                while liquidity and fillQuantity > 0:
+                    quantity = liquidity[0].getQuantity()
+                    lastPrice = liquidity[0].getStrike()
+                    if fillQuantity > quantity:
+                        #todo: modify state
+                        fillQuantity = fillQuantity - quantity
+                        liquidity.pop(0)
+                    else:
+                        liquidity[0].setQuantity(quantity - fillQuantity)
+                        fillQuantity = 0
+                if fillQuantity != 0:
+                    #note: for now, if a market sell order cannot be fully filled,
+                    #      the rest will be converted to a limit sell order with
+                    #      the last executed price being the strike
+                    limitSellOrder = Order(fillQuantity, lastPrice, order.getName(), order.getExpiration())
+                    self.asks[ticker].append(limitSellOrder)
+                    self.asks[ticker].sort()
+                
+    def settle(self):
+        #todo: clear expired orders
+        self.executeMarketBuy()
+        self.executeMarketSell()
     
     def quotePrice(self, ticker):
         sellPrice = float("-inf")
