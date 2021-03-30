@@ -8,6 +8,8 @@ class Order:
     
     def __lt__(self, other):
         if isinstance(other, Order):
+            if self.strike == other.strike:
+                return self.quantity < other.quantity
             return self.strike < other.strike
         else:
             return False
