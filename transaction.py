@@ -6,11 +6,7 @@ class Transaction:
         self.market = market
     
     def execute(self):
-        if self.orderType == "limit buy":
-            self.market.submitLimitBuy(self.order, self.country)
-        if self.orderType == "limit sell":
-            self.market.submitLimitSell(self.order, self.country)
-        if self.orderType == "market buy":
-            self.market.submitMarketBuy(self.order, self.country)
-        if self.orderType == "market sell":
-            self.market.submitMarketSell(self.order, self.country)
+        if self.orderType == "buy":
+            self.market.submitBuyOrders(self.order, self.country)
+        if self.orderType == "sell":
+            self.market.submitSellOrders(self.order, self.country)

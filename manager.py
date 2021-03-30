@@ -8,7 +8,7 @@ class Manager:
     
     def addPlayer(self, player, initialState):
         self.players.append(player)
-        self.world.append({player: initialState})
+        self.world.append({player.getName(): initialState})
     
     def playOneRound(self):
         for player in self.players:

@@ -1,60 +1,77 @@
 import sys
 sys.path.append('../')
+from market import Market
 
-from market import Order, Market
+C1 = {"R1": 1000, "R2": 1500, "R3": 400, "cash": 7000}
+C2 = {"R1": 100, "R2": 5000, "R3": 450, "cash": 5000}
+C3 = {"R1": 700, "R2": 500, "R3": 2000, "cash": 10000}
+world = {"C1": C1, "C2": C2, "C3": C3}
+market = Market(world)
 
-#test toString()
-order1 = Order(100, "C1", 120, 10)
-print(order1.toString())
-order2 = Order(100, "C1", float("inf"))
-print(order2.toString())
-
-#test < and <=
-print(order1 < order2) #true
-print(order1 <= order2) #true
-
-market = Market({})
-limitBuyOrder1 = {
-    "R1": [{"quantity": 100, "strike": 100}, {"quantity": 130, "strike": 120}, {"quantity": 1300, "strike": 97}],
-    "R2": [{"quantity": 560, "strike": 1250, "expiration": 10}, {"quantity": 300, "strike": 1000}]
+limitBuyOrderC1 = {
+    "R3": [{"quantity": 200, "strike": 10, "expiration": 3}, {"quantity": 300, "strike": 11}]
 }
-market.submitLimitBuy(limitBuyOrder1, "C1")
-
-limitSellOrder1 = {
-    "R1": [{"quantity": 10, "strike": 150}, {"quantity": 100, "strike": 130}, {"quantity": 500, "strike": 165}],
-    "R2": [{"quantity": 300, "strike": 1400}, {"quantity": 500, "strike": 1700}]
+limitSellOrderC1 = {
+    "R1": [{"quantity": 50, "strike": 30}, {"quantity": 130, "strike": 25}],
+    "R2": [{"quantity": 100, "strike": 10}, {"quantity": 100, "strike": 13}, {"quantity": 200, "strike": 15}]
 }
-market.submitLimitSell(limitSellOrder1, "C2")
+limitBuyOrderC2 = {
+    "R1": [{"quantity": 200, "strike": 10, "expiration": 1}, {"quantity": 200, "strike": 5, "expiration": 3}, {"quantity": 100, "strike": 2}],
+    "R3": [{"quantity": 100, "strike": 5}, {"quantity": 200, "strike": 2}]
+}
+limitSellOrderC2 = {
+    "R2": [{"quantity": 1000, "strike": 8}, {"quantity": 1000, "strike": 10}, {"quantity": 500, "strike": 15}]
+}
+limitBuyOrderC3 = {
+    "R1": [{"quantity": 50, "strike": 20, "expiration": 4}],
+    "R2": [{"quantity": 500, "strike": 10, "expiration": 2}, {"quantity": 300, "strike": 12}]
+}
+limitSellOrderC3 = {
+    "R3": [{"quantity": 1000, "strike": 4}, {"quantity": 500, "strike": 2}]
+}
+market.submitBuyOrders(limitBuyOrderC1, "C1")
+market.submitSellOrders(limitSellOrderC1, "C1")
+market.submitBuyOrders(limitBuyOrderC2, "C2")
+market.submitSellOrders(limitSellOrderC2, "C2")
+market.submitBuyOrders(limitBuyOrderC3, "C3")
+market.submitSellOrders(limitSellOrderC3, "C3")
 
-#market.printBuySide()
-#market.printSellSide()
-
-#start the simulation with more buyers than sellers
+print("------------Market------------")
 market.printOrderBook("R1")
-quote = market.quotePrice("R1");
-print("Buy at:", quote["buyPrice"], "Sell at:", quote["sellPrice"])
-
 print()
-marketBuyOrder1 = {"R1": {"quantity": 50}}
-market.submitMarketBuy(marketBuyOrder1, "C3")
-market.settle()
-market.printOrderBook("R1")
-quote = market.quotePrice("R1");
-print("Buy at:", quote["buyPrice"], "Sell at:", quote["sellPrice"])
-
-
+market.printOrderBook("R2")
 print()
-marketBuyOrder2 = {"R1": {"quantity": 70}}
-market.submitMarketBuy(marketBuyOrder2, "C3")
-market.settle()
-market.printOrderBook("R1")
-quote = market.quotePrice("R1");
-print("Buy at:", quote["buyPrice"], "Sell at:", quote["sellPrice"])
-
+market.printOrderBook("R3")
+print("------------------------------")
 print()
-marketBuyOrder3 = {"R1": {"quantity": 1000}}
-market.submitMarketBuy(marketBuyOrder3, "C3")
+
+print("World state:", world)
+reservesC1 = market.getReserves("C1")
+reservesC2 = market.getReserves("C2")
+reservesC3 = market.getReserves("C3")
+print("Reserves for C1:", reservesC1)
+print("Reserves for C2:", reservesC2)
+print("Reserves for C3:", reservesC3)
+print()
+
+print("-----Settled Trades-----")
 market.settle()
+print("------------------------")
+print()
+
+print("------------Market------------")
 market.printOrderBook("R1")
-quote = market.quotePrice("R1");
-print("Buy at:", quote["buyPrice"], "Sell at:", quote["sellPrice"])
+print()
+market.printOrderBook("R2")
+print()
+market.printOrderBook("R3")
+print("------------------------------")
+print()
+
+print("World state:", world)
+reservesC1 = market.getReserves("C1")
+reservesC2 = market.getReserves("C2")
+reservesC3 = market.getReserves("C3")
+print("Reserves for C1:", reservesC1)
+print("Reserves for C2:", reservesC2)
+print("Reserves for C3:", reservesC3)
