@@ -14,7 +14,7 @@ class Manager:
         for player in self.players:
             actions = player.generateActions(self.world, self.market)
             for action in actions:
-                action.execute()
+                state = action.execute()
         self.market.settle()
     
     def getWorldState(self):

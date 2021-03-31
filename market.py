@@ -132,9 +132,8 @@ class Market:
                     self.world[buyerName][ticker] = self.world[buyerName][ticker] + fillQuantity
                     self.reserves[buyerName]["cash"] = self.reserves[buyerName]["cash"] -  settlePrice * fillQuantity
                     #only reserves required amount of cash for the bidder
-                    requiredReservedCash = buyingPrice * (buyingQuantity - fillQuantity)
-                    #return the extra back to the bidder
-                    self.world[buyerName]["cash"] = self.world[buyerName]["cash"] + (self.reserves[buyerName]["cash"] - requiredReservedCash)
+                    self.reserves[buyerName]["cash"] = self.reserves[buyerName]["cash"] - (buyingPrice - settlePrice) * fillQuantity
+                    self.world[buyerName]["cash"] = self.world[buyerName]["cash"] + (buyingPrice - settlePrice) * fillQuantity
                     deal = {"seller": sellerName, "buyer": buyerName, "price": settlePrice, "quantity": fillQuantity}
                     print(ticker, ":", deal)
                     if ticker not in self.history.keys():
@@ -159,6 +158,7 @@ class Market:
         for ticker in self.asks.keys():
             validAsks = []
             for order in self.asks[ticker]:
+                #return reserves from expired orders
                 if order.getExpiration() == 0:
                     self.world[order.getName()][ticker] = self.world[order.getName()][ticker] + order.getQuantity()
                     self.reserves[order.getName()][ticker] = self.reserves[order.getName()][ticker] - order.getQuantity()
@@ -168,6 +168,7 @@ class Market:
         for ticker in self.bids.keys():
             validBids = []
             for order in self.bids[ticker]:
+                #return reserves from expired orders
                 if order.getExpiration() == 0:
                     self.world[order.getName()]["cash"] = self.world[order.getName()]["cash"] + order.getQuantity() * order.getStrike()
                     self.reserves[order.getName()]["cash"] = self.reserves[order.getName()]["cash"] - order.getQuantity() * order.getStrike()
