@@ -9,12 +9,14 @@ country1 = "Atlantis"
 
 transform_templates = [housing, alloys, electronics, farms, factories]
 myCountry = "Atlantis"
-world = World(myCountry, transform_templates, '/Users/aaronwong/Desktop/code/ai_project/test_initial_states/initial_state_2.xlsx', 'resources.xlsx')
+world = World(myCountry, transform_templates, '/home/aaronwong/code/ai_project/test_initial_states/initial_state_2.xlsx', 'resources.xlsx')
 startState = world.getStartState()
 print(startState)
 startstate = world.getStartState
 
 mine = Mine(startState, country1, 'R6', difficulty=2)
 print(mine.toString())
+newstate = mine.execute()
+newstate = mine.execute()
 newstate = mine.execute()
 print(newstate)
