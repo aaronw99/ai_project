@@ -13,7 +13,6 @@ class MinePlayer(Player):
         mine = Mine(self, "R1", 3)
         return [mine]
 
-
 gm = Manager()
 playerA = MinePlayer("Atlantis")
 playerAState = {"R1": 10}
