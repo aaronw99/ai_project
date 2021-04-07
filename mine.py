@@ -20,9 +20,9 @@ class Mine:
         # Normalising to 1.0
         prob /= np.sum(prob)
         payout = np.random.choice(pers, 1, p = prob)
-        world[self.country][self.resource] = world[self.country][self.resource] + payout.item(0)
+        world[self.player.name][self.resource] = world[self.player.name][self.resource] + payout.item(0)
     
     def toString(self):
-        string = "(MINE " + self.country + " RESOURCE (" + self.resource + ") "
-        string = string + "DIFFICULTY (" + str(self.initial_difficulty) + "))"
+        string = "(MINE " + self.player.name + " RESOURCE (" + self.resource + ") "
+        string = string + "DIFFICULTY (" + str(self.difficulty) + "))"
         return string
