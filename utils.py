@@ -4,6 +4,12 @@ from transfer import Transfer
 import numpy as np
 from thresholds import comfortable_level
 
+
+#todo: implement this
+def getInitialState(fileName, rowName):
+    return {}
+
+
 # calculate_transform_max_multiplier
 # this calculates the max amount of a given transform template that can be applied
 # to a country given their resources
