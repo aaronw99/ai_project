@@ -91,7 +91,7 @@ class World:
         probability_success = utils.calculate_success_probability(
             self.myCountry, curState, nextState, action, self.resourceWeightPath)
         failure_cost = -discounted_reward * multiplier
-        print("discounted reward:", discounted_reward, "p:", probability_success)
+        #print("discounted reward:", discounted_reward, "p:", probability_success)
         eu = probability_success * discounted_reward + \
             (1 - probability_success) * failure_cost
         return eu

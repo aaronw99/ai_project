@@ -47,6 +47,15 @@ class Order:
             output = output + "Expires in " + str(self.expiration) + ". "
         output = output + self.name
         return output
+    
+    def toDict(self):
+        d = {}
+        d["strike"] = self.strike
+        d["quantity"] = self.quantity
+        d["name"] = self.name
+        if self.expiration != -1:
+            d["expiration"] = self.expiration
+        return d
 
 class Market:
     def __init__(self, world):
@@ -188,6 +197,34 @@ class Market:
     def getReserves(self, name):
         if name in self.reserves:
             return self.reserves[name]
+        else:
+            return {}
+        
+    def getHistory(self, ticker):
+        if ticker in self.history.keys():
+            return self.history[ticker]
+        else:
+            return []
+    
+    def getBuyOrders(self, ticker):
+        orders = []
+        if ticker in self.bids.keys():
+            for order in self.bids[ticker]:
+                orders.append(order.toDict())
+        return orders
+        
+    def getSellOrders(self, ticker):
+        orders = []
+        if ticker in self.asks.keys():
+            for order in self.asks[ticker]:
+                orders.append(order.toDict())
+        return orders
+    
+    def getOrders(self, ticker):
+        book = {}
+        book["buy"] = self.getBuyOrders(ticker)
+        book["sell"] = self.getSellOrders(ticker)
+        return book
     
     def printBuySide(self, ticker = "all"):
         print("Buy side orders for " + ticker)
@@ -224,4 +261,19 @@ class Market:
             if ticker in self.bids.keys():    
                 for order in self.bids[ticker]:
                     print(order.toString())
-            
+        else:
+            tickers = set()
+            for ticker in self.asks.keys():
+                tickers.add(ticker)
+            for ticker in self.bids.keys():
+                tickers.add(ticker)
+            for ticker in tickers:
+                print("--------------" + ticker + "--------------")
+                print("-------------Asks-------------")
+                if ticker in self.asks.keys():
+                    for order in reversed(self.asks[ticker]):
+                        print(order.toString())
+                print("-------------Bids-------------")
+                if ticker in self.bids.keys():    
+                    for order in self.bids[ticker]:
+                        print(order.toString())
