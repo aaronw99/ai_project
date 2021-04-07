@@ -15,7 +15,6 @@ class MinePlayer(Player):
 
 
 gm = Manager()
-#the following is taken from initial state 1
 playerA = MinePlayer("Atlantis")
 playerAState = {"R1": 10}
 gm.addPlayer(playerA, playerAState)
