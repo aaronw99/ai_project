@@ -1,4 +1,4 @@
-#work in progress
+# The Order class represents a bid or an ask for a given resource
 class Order:
     # __init___
     # this constructs the Order object with the given parameters
@@ -64,9 +64,12 @@ class Order:
             d["expiration"] = self.expiration
         return d
 
+# The Market class represents an exchange center that matches buyers and sellers
+# See tests/market_test.py for a demo
 class Market:
-    def __init__(self, world):
-        self.world = world
+    # __init___
+    # this constructs the Market object  
+    def __init__(self):
         self.bids = {}
         self.asks = {}
         self.reserves = {}
@@ -76,7 +79,8 @@ class Market:
     # this adds the given orders to the bid heap
     # @orders(dict): the orders. See transaction.py for the expected format
     # @name(str): name of the issuer
-    def submitBuyOrders(self, orders: dict, name: str):
+    # @world(dict): the state of the world
+    def submitBuyOrders(self, orders: dict, name: str, world: dict):
         for ticker in orders.keys():
             if ticker not in self.bids.keys():
                 self.bids[ticker] = []
@@ -102,13 +106,14 @@ class Market:
                 if "cash" not in self.reserves[name]:
                     self.reserves[name]["cash"] = 0
                 self.reserves[name]["cash"] = self.reserves[name]["cash"] + quantity * strike
-                self.world[name]["cash"] = self.world[name]["cash"] - quantity * strike
+                world[name]["cash"] = world[name]["cash"] - quantity * strike
     
     # submitSellOrders
     # this adds the given orders to the ask heap
     # @orders(dict): the orders. See transaction.py for the expected format
     # @name(str): name of the issuer
-    def submitSellOrders(self, orders: dict, name: str):
+    # @world(dict): the state of the world
+    def submitSellOrders(self, orders: dict, name: str, world: dict):
         for ticker in orders.keys():
             if ticker not in self.asks.keys():
                 self.asks[ticker] = []
@@ -134,13 +139,14 @@ class Market:
                 if ticker not in self.reserves[name]:
                     self.reserves[name][ticker] = 0
                 self.reserves[name][ticker] = self.reserves[name][ticker] + quantity
-                self.world[name][ticker] = self.world[name][ticker] - quantity
+                world[name][ticker] = world[name][ticker] - quantity
     
     # settle
     # this settles the market by matching available buy and sell orders,
     # updating the validity of the orders, removing the expired orders,
     # and returning extra reserves to their owners
-    def settle(self):
+    # @world(dict): the state of the world
+    def settle(self, world: dict):
         #match buyers and sellers
         for ticker in self.asks.keys():
             if ticker in self.bids.keys():
@@ -155,13 +161,13 @@ class Market:
                     buyingPrice = bids[0].getStrike()
                     fillQuantity = min(sellingQuantity, buyingQuantity)
                     settlePrice = (buyingPrice + sellingPrice) / 2
-                    self.world[sellerName]["cash"] = self.world[sellerName]["cash"] + settlePrice * fillQuantity
+                    world[sellerName]["cash"] = world[sellerName]["cash"] + settlePrice * fillQuantity
                     self.reserves[sellerName][ticker] = self.reserves[sellerName][ticker] - fillQuantity
-                    self.world[buyerName][ticker] = self.world[buyerName][ticker] + fillQuantity
+                    world[buyerName][ticker] = world[buyerName][ticker] + fillQuantity
                     self.reserves[buyerName]["cash"] = self.reserves[buyerName]["cash"] -  settlePrice * fillQuantity
                     #only reserves required amount of cash for the bidder
                     self.reserves[buyerName]["cash"] = self.reserves[buyerName]["cash"] - (buyingPrice - settlePrice) * fillQuantity
-                    self.world[buyerName]["cash"] = self.world[buyerName]["cash"] + (buyingPrice - settlePrice) * fillQuantity
+                    world[buyerName]["cash"] = world[buyerName]["cash"] + (buyingPrice - settlePrice) * fillQuantity
                     deal = {"seller": sellerName, "buyer": buyerName, "price": settlePrice, "quantity": fillQuantity}
                     print(ticker, ":", deal)
                     if ticker not in self.history.keys():
@@ -188,7 +194,7 @@ class Market:
             for order in self.asks[ticker]:
                 #return reserves from expired orders
                 if order.getExpiration() == 0:
-                    self.world[order.getName()][ticker] = self.world[order.getName()][ticker] + order.getQuantity()
+                    world[order.getName()][ticker] = world[order.getName()][ticker] + order.getQuantity()
                     self.reserves[order.getName()][ticker] = self.reserves[order.getName()][ticker] - order.getQuantity()
                 else:
                     validAsks.append(order)
@@ -198,7 +204,7 @@ class Market:
             for order in self.bids[ticker]:
                 #return reserves from expired orders
                 if order.getExpiration() == 0:
-                    self.world[order.getName()]["cash"] = self.world[order.getName()]["cash"] + order.getQuantity() * order.getStrike()
+                    world[order.getName()]["cash"] = world[order.getName()]["cash"] + order.getQuantity() * order.getStrike()
                     self.reserves[order.getName()]["cash"] = self.reserves[order.getName()]["cash"] - order.getQuantity() * order.getStrike()
                 else:
                     validBids.append(order)
@@ -207,6 +213,10 @@ class Market:
     # quotePrice
     # this returns the best bid and ask prices for a given resource
     # @ticker(str): the name of the resource
+    # return: best bidding and asking prices with the following format:
+    #         {"buyingPrice": p1, "sellingPrice": p2}
+    # note: if no bidding price is available, buyingPrice will be -inf
+    #       if no asking price is available, sellingPrice will be inf
     def quotePrice(self, ticker):
         sellPrice = float("-inf")
         buyPrice = float("inf")
@@ -219,6 +229,8 @@ class Market:
     # getReserves
     # this returns the reserves of a country in the market
     # @name(str): the name of the country
+    # return: the reserves that a country has in the market with the following format:
+    #         {"cash": q1, "tickerName1": q2, "tickerName2": q3, ...}
     def getReserves(self, name):
         if name in self.reserves:
             return self.reserves[name]
@@ -226,8 +238,15 @@ class Market:
             return {}
     
     # getReserves
-    # this returns the transaction history for a given resource
+    # this returns the chronological transaction history for a given resource
     # @ticker(str): the name of the resource
+    # return: the chronological transaction history of a given resource 
+    #         with the following format
+    #         [
+    #           {"buyer": b1, "seller": s1, "price": p1, "quantity": q1},
+    #           {"buyer": b2, "seller": s2, "price": p2, "quantity": q2},
+    #           ...
+    #         ]
     def getHistory(self, ticker):
         if ticker in self.history.keys():
             return self.history[ticker]
@@ -238,6 +257,13 @@ class Market:
     # this returns all the buy orders for a given resource, organized
     # from best to worst
     # @ticker(str): the name of the resource
+    # return: the buy orders for a given resource, organized
+    #         from best to worst, with the following format:
+    #         [
+    #           {"strike": s1, "quantity": q1, "name": n1, "expiration": e1 [optional]},
+    #           {"strike": s2, "quantity": q2, "name": n2, "expiration": e2 [optional]},
+    #           ...
+    #         ]
     def getBuyOrders(self, ticker):
         orders = []
         if ticker in self.bids.keys():
@@ -249,6 +275,13 @@ class Market:
     # this returns all the sell orders for a given resource, organized
     # from best to worst
     # @ticker(str): the name of the resource
+    # return: the buy orders for a given resource, organized
+    #         from best to worst, with the following format:
+    #         [
+    #           {"strike": s1, "quantity": q1, "name": n1, "expiration": e1 [optional]},
+    #           {"strike": s2, "quantity": q2, "name": n2, "expiration": e2 [optional]},
+    #           ...
+    #         ]
     def getSellOrders(self, ticker):
         orders = []
         if ticker in self.asks.keys():
@@ -258,15 +291,29 @@ class Market:
     
     # getOrders
     # this returns all the orders for a given resource, organized
-    # from best to worst
+    # from best to worst respectively
     # @ticker(str): the name of the resource
+    # return: all bids and asks of a given resource, organized
+    #         from best to worst respectively, with the following format:
+    #        {
+    #           "bids": [
+    #                       {"strike": s1, "quantity": q1, "name": n1, "expiration": e1 [optional]},
+    #                       {"strike": s2, "quantity": q2, "name": n2, "expiration": e2 [optional]},
+    #                       ...
+    #                   ],
+    #           "asks": [
+    #                       {"strike": s1, "quantity": q1, "name": n1, "expiration": e1 [optional]},
+    #                       {"strike": s2, "quantity": q2, "name": n2, "expiration": e2 [optional]},
+    #                       ...
+    #                   ]
+    #        }
     def getOrders(self, ticker):
         book = {}
-        book["buy"] = self.getBuyOrders(ticker)
-        book["sell"] = self.getSellOrders(ticker)
+        book["bids"] = self.getBuyOrders(ticker)
+        book["asks"] = self.getSellOrders(ticker)
         return book
     
-    # these are util functions for testing purposes
+    # these are util functions for testing and visualization purposes
     def printBuySide(self, ticker = "all"):
         print("Buy side orders for " + ticker)
         if ticker == "all":
@@ -302,6 +349,9 @@ class Market:
             if ticker in self.bids.keys():    
                 for order in self.bids[ticker]:
                     print(order.toString())
+            print("------------------------------")
+            print()
+        
         else:
             tickers = set()
             for ticker in self.asks.keys():
@@ -318,3 +368,5 @@ class Market:
                 if ticker in self.bids.keys():    
                     for order in self.bids[ticker]:
                         print(order.toString())
+                print("------------------------------")
+                print()

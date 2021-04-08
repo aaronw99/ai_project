@@ -9,7 +9,7 @@ C1 = {"R1": 1000, "R2": 1500, "R3": 400, "cash": 7000}
 C2 = {"R1": 100, "R2": 5000, "R3": 450, "cash": 5000}
 C3 = {"R1": 700, "R2": 500, "R3": 2000, "cash": 10000}
 world = {"C1": C1, "C2": C2, "C3": C3}
-market = Market(world)
+market = Market()
 
 limitBuyOrderC1 = {
     "R3": [{"quantity": 200, "strike": 10, "expiration": 3}, {"quantity": 300, "strike": 11}]
@@ -32,13 +32,15 @@ limitBuyOrderC3 = {
 limitSellOrderC3 = {
     "R3": [{"quantity": 1000, "strike": 4}, {"quantity": 500, "strike": 2}]
 }
-market.submitBuyOrders(limitBuyOrderC1, "C1")
-market.submitSellOrders(limitSellOrderC1, "C1")
-market.submitBuyOrders(limitBuyOrderC2, "C2")
-market.submitSellOrders(limitSellOrderC2, "C2")
-market.submitBuyOrders(limitBuyOrderC3, "C3")
-market.submitSellOrders(limitSellOrderC3, "C3")
+#round 1 actions
+market.submitBuyOrders(limitBuyOrderC1, "C1", world)
+market.submitSellOrders(limitSellOrderC1, "C1", world)
+market.submitBuyOrders(limitBuyOrderC2, "C2", world)
+market.submitSellOrders(limitSellOrderC2, "C2", world)
+market.submitBuyOrders(limitBuyOrderC3, "C3", world)
+market.submitSellOrders(limitSellOrderC3, "C3", world)
 
+#before market settles
 print("------------Market------------")
 market.printOrderBook("R1")
 print()
@@ -60,11 +62,13 @@ print("R2 Price:", market.quotePrice("R2"))
 print("R3 Price:", market.quotePrice("R3"))
 print()
 
+#market settles
 print("-----Settled Trades-----")
-market.settle()
+market.settle(world)
 print("------------------------")
 print()
 
+#after market settles
 print("------------Market------------")
 market.printOrderBook("R1")
 print()
@@ -86,16 +90,18 @@ print("R2 Price:", market.quotePrice("R2"))
 print("R3 Price:", market.quotePrice("R3"))
 print()
 
+#round 2
 limitBuyOrderC1 = {
     "R2": [{"quantity": 100, "strike": 6}, {"quantity": 100, "strike": 4}]
 }
-market.submitBuyOrders(limitBuyOrderC1, "C1")
+market.submitBuyOrders(limitBuyOrderC1, "C1", world)
 
 marketBuyOrderC3 = {
     "R2": [{"quantity": 500, "strike": 8}]
 }
-market.submitBuyOrders(marketBuyOrderC3, "C3")
+market.submitBuyOrders(marketBuyOrderC3, "C3", world)
 
+#before market settles
 print("------------Market------------")
 market.printOrderBook("R1")
 print()
@@ -117,11 +123,13 @@ print("R2 Price:", market.quotePrice("R2"))
 print("R3 Price:", market.quotePrice("R3"))
 print()
 
+#market settles
 print("-----Settled Trades-----")
-market.settle()
+market.settle(world)
 print("------------------------")
 print()
 
+#after market settles
 print("------------Market------------")
 market.printOrderBook("R1")
 print()

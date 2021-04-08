@@ -7,6 +7,8 @@ from scheduler import Scheduler
 from templates import housing, alloys, electronics, farms, factories, metallic_elements, timber, plant
 import heapq
 
+# The NaivePlayer class is a wrapper for our p1 code to utilize the
+# market system
 class NaivePlayer(Player):
     def __init__(self, name):
         Player.__init__(self, name)
@@ -21,7 +23,7 @@ class NaivePlayer(Player):
         scheduler = Scheduler(worldWrapper)
         res = scheduler.search(depth_bound, frontier_max_size, multiplier)
         bestSchedule = heapq.heappop(res).getSchedule()
-        #below is the core of the wrapper
+        #below is the wrapper
         table = str.maketrans(dict.fromkeys("()"))
         bestAction = bestSchedule[0][0].translate(table)
         tokens = bestAction.split()
@@ -51,6 +53,18 @@ class NaivePlayer(Player):
                     mine = Mine(self, ticker, 2)
                     actions.append(mine)
         if tokens[0] == "TRANSFORM":
-            print("TRANSFORM is yet to be implemented")
+            tokens = bestAction.split("||")
+            inputs = tokens[1].split()
+            outputs = tokens[2].split()
+            multiplier = int(tokens[3].split())
+            template = {}
+            template["in"] = {}
+            template["out"] = {}
+            for i in range(0, len(inputs) / 2):
+                template["in"][inputs[i]] = int(inputs[i + 1])
+            for i in range(0, len(outputs) / 2):
+                template["out"][outputs[i]] = int(outputs[i + 1])
+            transformation = Transformation(self.name, template, multiplier)
+            actions.append(transformation)
         return actions
         

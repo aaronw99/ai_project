@@ -1,8 +1,10 @@
 from manager import Manager
 from naive_player import NaivePlayer
 
+#set up game manager
 gm = Manager()
-#the following is taken from initial state 1
+#the following is taken from test_initial_tests/initial_state_1.xlsx
+#construct player agents
 playerA = NaivePlayer("Atlantis")
 playerAState = {
     "R1": 100, 
@@ -82,12 +84,14 @@ playerCState = {
     "cash": 20000
 }
 
+#add players to the game manager
 gm.addPlayer(playerA, playerAState)
 gm.addPlayer(playerB, playerBState)
 gm.addPlayer(playerC, playerCState)
 print("Initial World State", gm.world)
 print()
 
+#start simulation
 rounds = 2
 for i in range(0, rounds):
     print("-----------Round " + str(i + 1) + "-----------")
@@ -95,5 +99,4 @@ for i in range(0, rounds):
     print("World State:", gm.world)
     print("------------Market------------")
     gm.market.printOrderBook()
-    print("-----------------------------")
     print()

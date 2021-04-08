@@ -1,5 +1,5 @@
 class Transaction:
-    #expects order format:
+    #expects the following order format:
     #{
     #   ticker1: [
     #               {
@@ -27,6 +27,6 @@ class Transaction:
     
     def execute(self, world):
         if self.orderType == "buy":
-            self.market.submitBuyOrders(self.order, self.name)
+            self.market.submitBuyOrders(self.order, self.name, world)
         if self.orderType == "sell":
-            self.market.submitSellOrders(self.order, self.name)
+            self.market.submitSellOrders(self.order, self.name, world)

@@ -27,4 +27,13 @@ class Transform:
         for r_type in outputs:
             string = string + "(" + r_type + " " + str(outputs[r_type] * self.multiplier)+ ")"
         string = string + "))"
+        #below is for p2 wrapper purposes
+        string = string + " || "
+        for r_type in inputs:
+            string = string + " " + r_type + " " + str(inputs[r_type])
+        string = string + " || "
+        for r_type in outputs:
+            string = string + " " + r_type + " " + str(outputs[r_type])
+        string = string + " || "
+        string = string + str(self.multiplier)
         return string

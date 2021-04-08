@@ -14,7 +14,7 @@ class Transformation:
         return self.state
         
     def toString(self):
-        string = "(TRANSFORM " + self.name + " INPUTS ("
+        string = "(TRANSFORMATION " + self.name + " INPUTS ("
         inputs = self.template["in"]
         outputs = self.template["out"]
         for r_type in inputs:
