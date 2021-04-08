@@ -35,7 +35,7 @@ class NaivePlayer(Player):
                 #todo: generate a desired sell order
                 if price == float("-inf"):
                     price = 30
-                transaction = Transaction(self.name, "sell", {ticker: [{"quantity": quantity, "strike": price, "expiration": 2}]}, market)
+                transaction = Transaction(self.name, "sell", {ticker: [{"quantity": quantity, "strike": price}]}, market)
                 actions.append(transaction)
             else:
                 price = market.quotePrice(ticker)["buyingPrice"]
@@ -45,7 +45,7 @@ class NaivePlayer(Player):
                 else:
                     quantity = int(world[self.name]["cash"] / price)
                 if quantity != 0:
-                    transaction = Transaction(self.name, "buy", {ticker: [{"quantity": quantity, "strike": price, "expiration": 2}]}, market)
+                    transaction = Transaction(self.name, "buy", {ticker: [{"quantity": quantity, "strike": price}]}, market)
                     actions.append(transaction)
                 else:
                     mine = Mine(self, ticker, 2)

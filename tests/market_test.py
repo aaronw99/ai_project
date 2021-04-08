@@ -2,6 +2,9 @@ import sys
 sys.path.append('../')
 from market import Market
 
+#todo: sanity check => total amount of each resource or cash stays constant
+#                      after market settles. I've verified by hand calculation.
+#                      but going forward we need explicit unit tests for this.
 C1 = {"R1": 1000, "R2": 1500, "R3": 400, "cash": 7000}
 C2 = {"R1": 100, "R2": 5000, "R3": 450, "cash": 5000}
 C3 = {"R1": 700, "R2": 500, "R3": 2000, "cash": 10000}
