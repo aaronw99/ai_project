@@ -3,12 +3,16 @@ from transform import Transform
 from transfer import Transfer
 import numpy as np
 from thresholds import comfortable_level
-
+import os
 
 #todo: implement this
 def getInitialState(fileName, rowName):
-    return {}
-
+    THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+    my_file = os.path.join(THIS_FOLDER, fileName)
+    df = pd.read_excel(my_file)
+    df.set_index("Country", inplace = True)
+    result = df.loc[rowName]  
+    return result
 
 # calculate_transform_max_multiplier
 # this calculates the max amount of a given transform template that can be applied
