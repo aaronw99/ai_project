@@ -4,6 +4,12 @@ from transfer import Transfer
 import numpy as np
 from thresholds import comfortable_level
 
+
+#todo: implement this
+def getInitialState(fileName, rowName):
+    return {}
+
+
 # calculate_transform_max_multiplier
 # this calculates the max amount of a given transform template that can be applied
 # to a country given their resources
@@ -137,8 +143,7 @@ def calculate_state_quality(state, country, path):
 
 
 def generate_trades(state, myCountry):
-    countryList = ["Atlantis", "Brobdingnag",
-                   "Carpania", "Dinotopia", "Erewhon"]
+    countryList = state.keys()
     # list of resources and wastes that are impractical for trading, at least for part 1
     untradeable_resources = ['R1', 'R4', 'R7', 'R19', 'R21', 'R22',
                              "R1'", "R5'", "R6'", "R18'", "R19'", "R20'", "R21'", "R22'"]

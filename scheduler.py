@@ -92,7 +92,7 @@ class Scheduler:
                         nextState = successor[0]
                         nextAction = successor[1]
                         nextUtility = self.world.getExpectedUtility(state, nextState, len(schedule) + 1, nextAction, multiplier)
-                        print(nextAction.toString(), "eu:", nextUtility)
+                        #print(nextAction.toString(), "eu:", nextUtility)
                         nextSchedule = schedule + [[nextAction.toString(), nextUtility]]
                         nextItem = Item(-1 * nextUtility, nextState,
                                         copy.deepcopy(nextSchedule))

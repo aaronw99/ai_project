@@ -1,12 +1,32 @@
 class Transaction:
-    def __init__(self, country, orderType, order, market):
-        self.country = country
+    #expects the following order format:
+    #{
+    #   ticker1: [
+    #               {
+    #                   "quantity": [required], 
+    #                   "strike": [required],
+    #                   "expiration": [optional]
+    #               },
+    #               {
+    #                   "quantity": [required].
+    #                   "strike": [required],
+    #                   "expiration": [optional]
+    #               },
+    #               ...
+    #             ],
+    #   ticker2: [
+    #               {same as above},
+    #               ...
+    #            ]
+    #}
+    def __init__(self, name, orderType, order, market):
+        self.name = name
         self.orderType = orderType
         self.order = order
         self.market = market
     
-    def execute(self):
+    def execute(self, world):
         if self.orderType == "buy":
-            self.market.submitBuyOrders(self.order, self.country)
+            self.market.submitBuyOrders(self.order, self.name, world)
         if self.orderType == "sell":
-            self.market.submitSellOrders(self.order, self.country)
+            self.market.submitSellOrders(self.order, self.name, world)
