@@ -44,5 +44,6 @@ class Transaction:
                 string = string + ", QUANTITY: " + str(order["quantity"])
                 if "expiration" in order.keys():
                     string = string + ", EXPIRATION: " + str(order["expiration"])
+                string = string + "\n"
         return string
         
