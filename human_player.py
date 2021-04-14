@@ -17,7 +17,7 @@ class HumanPlayer(Player):
             string = str(input())
             tokens = string.split()
             command = tokens[0].lower()
-            if command == "bid":
+            if command == "buy":
                 if len(tokens) < 3:
                     print("Missing parameters")
                 else:
@@ -67,9 +67,13 @@ class HumanPlayer(Player):
                     elif flag == "-m":
                         market.printOrderBook()
                     elif flag == "-t":
-                        for i in range(2, len(tokens)):
-                            ticker = tokens[i].upper()
-                            print(ticker, market.quotePrice(ticker))
+                        if len(tokens) < 3:
+                            print("Missing parameters")
+                        else:
+                            tickers = tokens[2].split(",")
+                            for i in range(0, len(tickers)):
+                                ticker = tickers[i].upper()
+                                print(ticker, market.quotePrice(ticker))
                 else:
                     print("My State:", world[self.name])
             elif command == "mine":
@@ -82,7 +86,7 @@ class HumanPlayer(Player):
                     print("Submitted: ", mine.toString())
                     actions.append(mine)
             #todo: implement this
-            elif command == "transformation":
+            elif command == "transform":
                 print("Not implemented!")
             #lol why not
             elif command == "greedisgood":
@@ -93,6 +97,14 @@ class HumanPlayer(Player):
                 print("You gave yourself " + str(money) + " cash")
             elif command == "end":
                 finish = True
+            elif command == "help":
+                print("Here's a list of the commands: ")
+                print("show [-w] [-m] [-t (t1,t2,t3...)]")
+                print("buy (ticker) (strike1,quantity1,[expiration1]) (strike2,quantity2,[expiration2]) ...")
+                print("sell (ticker) (strike1,quantity1,[expiration1]) (strike2,quantity2,[expiration2]) ...")
+                print("mine (resource) (difficulty)")
+                print("transform (template) (multiplier)")
+                print("end")
             else:
                 print("Illegal command")
             print()
