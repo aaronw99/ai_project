@@ -73,7 +73,7 @@ class HumanPlayer(Player):
                 else:
                     print("My State:", world[self.name])
             elif command == "mine":
-                if len(tokens) <= 3:
+                if len(tokens) < 3:
                     print("missing parameters")
                 else:
                     resource = tokens[1].upper()
@@ -84,6 +84,13 @@ class HumanPlayer(Player):
             #todo: implement this
             elif command == "transformation":
                 print("Not implemented!")
+            #lol why not
+            elif command == "greedisgood":
+                money = 5000
+                if len(tokens) >= 2:
+                    money = float(tokens[1])
+                world[self.name]["cash"] = world[self.name]["cash"] + money
+                print("You gave yourself " + str(money) + " cash")
             elif command == "end":
                 finish = True
             else:
