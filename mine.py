@@ -10,7 +10,14 @@ class Mine:
     
     def execute(self, world):
         self.player.free = True
-        upper_limit = 50 * self.difficulty
+        population = world[self.player.name]["R1"]
+        upper_limit = self.difficulty
+        if population < 50:
+            upper_limit = 50 * self.difficulty
+        elif population > 150:
+            upper_limit = 150 * self.difficulty 
+        else:
+            upper_limit = population * self.difficulty
         skewed = 20
 
         pers = np.arange(1, upper_limit, 1)
