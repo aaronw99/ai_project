@@ -20,11 +20,18 @@ class Mine:
             return self.state
         else:
             self.turns_remaining = -1
-            upper_limit = 50 * self.initial_difficulty
+            population = self.state[self.country]["R1"]
+            upper_limit = self.initial_difficulty
+            if population < 50:
+                upper_limit = 50 * self.initial_difficulty
+            elif population > 150:
+                upper_limit = 150 * self.initial_difficulty 
+            else:
+                upper_limit = population * self.initial_difficulty
             skewed = 20
 
             pers = np.arange(1,upper_limit,1)
-            # Make the last n elements 10x more likely 
+            # Make the last n (20) elements 10x more likely 
             # The mining country is likely to get a big payout, but chance is still involved and the country can get a lower payout
             prob = [1.0]*(len(pers)-(skewed)) + [10.0]*skewed
             # Normalising to 1.0
