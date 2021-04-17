@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 
 # The Mine class represents the mine operation
 # As difficulty of the mine increases, the amount of turns to complete the action increases, but the potential payout increases
@@ -33,3 +34,17 @@ class Mine:
         string = "(MINE " + self.player.name + " RESOURCE (" + self.resource + ") "
         string = string + "DIFFICULTY (" + str(self.difficulty) + "))"
         return string
+
+    # __lt__
+    # < operator for Mine instances
+    # @other(obj): an object
+    def __lt__(self, other):
+        resources_df = pd.read_excel('/home/aaronwong/code/ai_project/resources.xlsx')
+
+        if isinstance(other, Mine):
+            if self.resource == other.resource:
+                return self.difficulty < other.difficulty
+            else:
+                return resources_df[resources_df['Resources'] == self.resource]['Weight'].iloc[0] < resources_df[resources_df['Resources'] == other.resource]['Weight'].iloc[0]
+        else:
+            return False

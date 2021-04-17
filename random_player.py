@@ -48,13 +48,14 @@ class RandomPlayer(Player):
         for resource in resources:
             if resource not in untradeable_resources:
                 quantity = myResources[resource]
-                price = market.quotePrice(resource)["sellingPrice"]
-                if price == float("-inf"):
-                    price = 30
-                # create a sell order for a random amount of the resource that the country has at the market's price for it
-                quantity = random.randint(1, quantity)
-                transaction = Transaction(self.name, "sell", {resource: [{"quantity": quantity, "strike": price}]}, market)
-                actions.append(transaction)
+                if quantity != 0:
+                    price = market.quotePrice(resource)["sellingPrice"]
+                    if price == float("-inf"):
+                        price = 30
+                    # create a sell order for a random amount of the resource that the country has at the market's price for it
+                    quantity = random.randint(1, quantity)
+                    transaction = Transaction(self.name, "sell", {resource: [{"quantity": quantity, "strike": price}]}, market)
+                    actions.append(transaction)
 
         # generate possible random mine actions
         mineable_resources = ["R2", "R3", "R6"]
