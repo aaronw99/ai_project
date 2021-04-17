@@ -3,12 +3,8 @@ from transformation import Transformation
 from templates import housing, alloys, electronics, farms, factories, metallic_elements, timber, plant
 import utils
 import random
-from transformation import Transformation
 from transaction import Transaction
 from mine import Mine
-from world_wrapper import WorldWrapper
-from scheduler import Scheduler
-import heapq
 
 # The RandomPlayer class is a player that randomly buys/sells/transforms each turn
 class RandomPlayer(Player):
