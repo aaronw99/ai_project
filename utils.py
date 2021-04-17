@@ -3,12 +3,39 @@ from transform import Transform
 from transfer import Transfer
 import numpy as np
 from thresholds import comfortable_level
+import os
 
 
-#todo: implement this
 def getInitialState(fileName, rowName):
-    return {}
-
+    THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+    my_file = os.path.join(THIS_FOLDER, fileName)
+    df = pd.read_excel(my_file)
+    df.set_index("Country", inplace = True)
+    row = df.loc[rowName]
+    initial_state = {}
+    initial_state["R1"] = row["R1"]
+    initial_state["R2"] = row["R2"]
+    initial_state["R3"] = row["R3"]
+    initial_state["R4"] = row["R4"]
+    initial_state["R5"] = row["R5"]
+    initial_state["R6"] = row["R6"]
+    initial_state["R7"] = row["R7"]
+    initial_state["R8"] = row["R8"]
+    initial_state["R9"] = row["R9"]
+    initial_state["R18"] = row["R18"]
+    initial_state["R19"] = row["R19"]
+    initial_state["R20"] = row["R20"]
+    initial_state["R21"] = row["R21"]
+    initial_state["R22"] = row["R22"]
+    initial_state["R1'"] = row["R1'"]
+    initial_state["R5'"] = row["R5'"]
+    initial_state["R6'"] = row["R6'"]
+    initial_state["R18'"] = row["R18'"]
+    initial_state["R19'"] = row["R19'"]
+    initial_state["R20'"] = row["R20'"]
+    initial_state["R21'"] = row["R21'"]
+    initial_state["R22'"] = row["R22'"]
+    return initial_state
 
 # calculate_transform_max_multiplier
 # this calculates the max amount of a given transform template that can be applied

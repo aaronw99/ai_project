@@ -10,13 +10,13 @@ print("initial state: ", initialStateNum)
 if res["R1"] != 100:
     print("Wrong R1:", res["R1"])
     
-if res["R7"] != 6000:
+if res["R7"] != 10:
     print("Wrong R7:", res["R7"])
     
-if res["R8"] != 660:
+if res["R8"] != 50:
     print("Wrong R8:", res["R8"])
     
-if res["R18"] != 30:
+if res["R18"] != 10:
     print("Wrong R18:", res["R18"])
     
 if res["R18'"] != 0:

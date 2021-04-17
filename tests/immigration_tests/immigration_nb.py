@@ -11,7 +11,7 @@ from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import r2_score
-
+import pickle
 
 # In[2]:
 
@@ -22,7 +22,7 @@ pd.options.mode.chained_assignment = None  # remove pd indexing warning
 # In[3]:
 
 
-df = pd.read_excel('../datasets/Canada.xlsx',
+df = pd.read_excel('Canada.xlsx',
                    sheet_name='Canada by Citizenship',
                    skiprows=range(20),
                    skipfooter=2)
@@ -99,6 +99,7 @@ for country in populations:
     country_df = df.loc[df["OdName"] == country]
     country_df['Arch'] = archetype
     for year in range(1980, 2014):
+        # store per million in population
         country_df[year] /= population
 
     countries_df = countries_df.append(country_df)
@@ -108,7 +109,7 @@ for country in populations:
 
 
 # Instead of 16 countries, choosing 4 countries for consistency
-countries = ["Sweden", "Libya", "India", "United States"]
+countries = populations.keys()
 df_collection = {}
 
 
@@ -144,8 +145,8 @@ for country in df_collection:
     # print("Country: ", country)
     # print("R2 Score: ")
     # print(r2_score(y, model(x)))
-    # plt.scatter(x,y)
-    # plt.plot(line, model(line))
+    plt.scatter(x,y)
+    plt.plot(line, model(line))
     # plt.show()
     models[country] = model
 
@@ -155,8 +156,8 @@ for country in df_collection:
 
 # Includes predictions for years beyond 2013
 # for year in range(1980, 2030):
-    # print("Year: ", year)
-    # for country in models:
-    # print(country, ": ", models[country](year))
+#     print("Year: ", year)
+#     for country in models:
+#         print(country, ": ", models[country](year))
 
     # In[ ]:

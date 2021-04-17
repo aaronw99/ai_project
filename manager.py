@@ -27,7 +27,9 @@ class Manager:
         for player in self.players:
             if player.free:
                 actions = player.generateActions(self.world, self.market)
+                print(player.name, "proposed:")
                 for action in actions:
+                    print(action.toString())
                     if isinstance(action, Mine):
                         player.free = False
                         heapq.heappush(self.miningQueue, [action.difficulty, action])
