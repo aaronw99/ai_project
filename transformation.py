@@ -11,7 +11,7 @@ class Transformation:
             world[self.name][r_type] = world[self.name][r_type] - inputs[r_type] * self.multiplier
         for r_type in outputs:
             world[self.name][r_type] = world[self.name][r_type] + outputs[r_type] * self.multiplier
-        return self.state
+        return world
         
     def toString(self):
         string = "(TRANSFORMATION " + self.name + " INPUTS ("

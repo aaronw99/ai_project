@@ -30,7 +30,11 @@ class Transaction:
             self.market.submitBuyOrders(self.order, self.name, world)
         if self.orderType == "sell":
             self.market.submitSellOrders(self.order, self.name, world)
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> main
     def toString(self):
         string = ""
         for ticker in self.order.keys():
@@ -45,4 +49,7 @@ class Transaction:
                 if "expiration" in order.keys():
                     string = string + ", EXPIRATION: " + str(order["expiration"])
         return string
+<<<<<<< HEAD
         
+=======
+>>>>>>> main
