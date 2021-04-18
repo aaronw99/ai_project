@@ -1,5 +1,7 @@
 from market import Market
 from mine import Mine
+from population_growth import PopulationGrowth 
+from immigration import Immigration 
 import heapq
 
 # The Manager class represents the game manager, which is in charge of
@@ -37,6 +39,7 @@ class Manager:
                         action.execute(self.world)
         self.runMiningQueue()
         self.market.settle(self.world)
+        
         #todo: potential intervention/accomodation from the gm
     
     # runMiningQueue
@@ -55,4 +58,5 @@ class Manager:
         for i in range(0, rounds):
             self.playOneRound()
     
-    
+    def immigrate(self, player):
+        pass

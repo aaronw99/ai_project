@@ -44,6 +44,6 @@ class Immigration:
         self.level *= multiplier
 
 
-    def toString(self):
+    def __str__(self):
         string = f"(IMMIGRATION FROM {self.country_from} TO {self.country_to}: {self.level} people)"
         return string
