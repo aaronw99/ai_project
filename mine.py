@@ -4,11 +4,19 @@ import pandas as pd
 # The Mine class represents the mine operation
 # As difficulty of the mine increases, the amount of turns to complete the action increases, but the potential payout increases
 class Mine:
+    # __init__
+    # @player(obj): the player object
+    # @resource(str): the name of the resource
+    # @difficulty(int): the difficulty level, aka the number of turns to skip
+    # this constructs the Mine object
     def __init__(self, player, resource, difficulty = 1):
         self.player = player
         self.resource = resource
         self.difficulty = difficulty
     
+    # execute
+    # @world(dict): the state of the world
+    # this executes the mine action and updates the state of the world
     def execute(self, world):
         # Once a mine action executes, the player is freed up to pursue different actions
         self.player.free = True
@@ -33,6 +41,8 @@ class Mine:
         payout = np.random.choice(pers, 1, p = prob)
         world[self.player.name][self.resource] = world[self.player.name][self.resource] + payout.item(0)
     
+    # toString
+    # this converts the mine action to a readable string
     def toString(self):
         string = "(MINE " + self.player.name + " RESOURCE (" + self.resource + ") "
         string = string + "DIFFICULTY (" + str(self.difficulty) + "))"
@@ -42,7 +52,7 @@ class Mine:
     # < operator for Mine instances
     # @other(obj): an object
     def __lt__(self, other):
-        resources_df = pd.read_excel('/home/aaronwong/code/ai_project/resources.xlsx')
+        resources_df = pd.read_excel("../resources.xlsx")
 
         if isinstance(other, Mine):
             if self.resource == other.resource:

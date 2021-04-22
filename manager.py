@@ -26,7 +26,7 @@ class Manager:
     def playOneRound(self):
         for player in self.players:
             if player.free:
-                print("------" + player.name + "'s turn-------")
+                print("-------" + player.name + "'s turn-------")
                 actions = player.generateActions(self.world, self.market)
                 print(player.name, "proposed:")
                 for action in actions:
@@ -36,10 +36,10 @@ class Manager:
                         heapq.heappush(self.miningQueue, [action.difficulty, action])
                     else:
                         action.execute(self.world)
-                print("------------------------------")
+                print("-" * (len(player.name) + 21))
+                print()
         self.runMiningQueue()
         self.market.settle(self.world)
-        #todo: potential intervention/accomodation from the gm
     
     # runMiningQueue
     # update the mining queue

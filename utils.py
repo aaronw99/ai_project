@@ -5,7 +5,11 @@ import numpy as np
 from thresholds import comfortable_level
 import os
 
-
+# getInitialState
+# this returns a json format dict of the row identified by the given rowName
+# from a given .xlsx file
+# @fileName: the path to the file
+# @rowName: the name of the row
 def getInitialState(fileName, rowName):
     THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
     my_file = os.path.join(THIS_FOLDER, fileName)

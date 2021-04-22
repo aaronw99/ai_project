@@ -2,6 +2,9 @@
 # To create a new type of player, inherit from this class and overwrite
 # the "generateActions" method
 class Player:
+    # __init___
+    # @name(str): the name of the player
+    # this constructs the Player object
     def __init__(self, name):
         self.name = name
         self.free = True    

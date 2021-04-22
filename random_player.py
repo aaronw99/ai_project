@@ -9,9 +9,18 @@ from mine import Mine
 # The RandomPlayer class is a type of Player that randomly buys/sells/transforms each turn
 
 class RandomPlayer(Player):
+    # __init___
+    # @name(str): the name of the player
+    # this constructs the RandomPlayer object
     def __init__(self, name):
         Player.__init__(self, name)
-        
+    
+    # generateActions
+    # this generates the actions that a(n) player/agent will take at each turn;
+    # game manager will invoke this method each round for each player and pass
+    # in the world state and the market state
+    # @world(dict): the state of the world
+    # @market(object): the market object
     def generateActions(self, world, market):
         # a list of the possible random actions
         actions = []
@@ -42,7 +51,7 @@ class RandomPlayer(Player):
                     # create a buy order of a random quantity of the resource up to the limit
                     quantity_to_buy = random.randint(1, quantity_to_buy)
                     if seller != self.name:
-                        transaction = Transaction(self.name, "buy", {resource: [{"quantity": quantity_to_buy, "strike": price}]}, market)
+                        transaction = Transaction(self.name, "buy", {resource: [{"quantity": quantity_to_buy, "strike": price, "expiration": 3}]}, market)
                         actions.append(transaction)
 
         # Generate possible sells for the market
@@ -55,7 +64,7 @@ class RandomPlayer(Player):
                         price = 30
                     # Create a sell order for a random amount of the resource that the country has at the market's price for it
                     quantity = random.randint(1, quantity)
-                    transaction = Transaction(self.name, "sell", {resource: [{"quantity": quantity, "strike": price}]}, market)
+                    transaction = Transaction(self.name, "sell", {resource: [{"quantity": quantity, "strike": price, "expiration": 3}]}, market)
                     actions.append(transaction)
 
         # Generate possible random mine actions
@@ -67,5 +76,5 @@ class RandomPlayer(Player):
         
         # Return one random action of all the possible actions
         action = [random.choice(actions)]
-        print(self.name + ": " + action[0].toString())
+        #print(self.name + ": " + action[0].toString())
         return action

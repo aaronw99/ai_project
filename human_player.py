@@ -4,10 +4,21 @@ from transaction import Transaction
 from mine import Mine
 from templates import housing, alloys, electronics, farms, factories, metallic_elements, timber, plant
 
+# The HumanPlayer class is a player agent that allows a human user to
+# manually control the actions through a command line interface
 class HumanPlayer(Player):
+    # __init___
+    # @name(str): the name of the player
+    # this constructs the HumanPlayer object
     def __init__(self, name):
         Player.__init__(self, name)        
     
+    # generateActions
+    # this generates the actions that a(n) player/agent will take at each turn;
+    # game manager will invoke this method each round for each player and pass
+    # in the world state and the market state
+    # @world(dict): the state of the world
+    # @market(object): the market object
     def generateActions(self, world, market):
         finish = False
         actions = []
@@ -95,7 +106,6 @@ class HumanPlayer(Player):
                     mine = Mine(self, resource, difficulty)
                     print("Submitted: ", mine.toString())
                     actions.append(mine)
-            #todo: implement this
             elif command == "transform":
                 if len(tokens) < 3:
                     print("missing parameters")
@@ -125,13 +135,13 @@ class HumanPlayer(Player):
                         actions.append(transformation)
                     else:
                         print("Illegal template")
-            #lol why not
+            # Congratulations! You have found the easter egg!
             elif command == "greedisgood":
                 money = 5000
                 if len(tokens) >= 2:
                     money = float(tokens[1])
                 world[self.name]["cash"] = world[self.name]["cash"] + money
-                print("You gave yourself " + str(money) + " cash")
+                print("You gave yourself " + str(money) + " cash. Go crazy!")
             elif command == "end":
                 finish = True
             elif command == "help":
