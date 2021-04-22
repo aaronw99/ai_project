@@ -4,7 +4,6 @@ from transaction import Transaction
 from mine import Mine
 from templates import housing, alloys, electronics, farms, factories, metallic_elements, timber, plant
 
-
 class HumanPlayer(Player):
     def __init__(self, name):
         Player.__init__(self, name)        
@@ -74,6 +73,17 @@ class HumanPlayer(Player):
                             for i in range(0, len(tickers)):
                                 ticker = tickers[i].upper()
                                 print(ticker, market.quotePrice(ticker))
+                    elif flag == "-tm":
+                        print("housing:", housing)
+                        print("alloys:", alloys)
+                        print("electronics:", electronics)
+                        print("farms:", farms)
+                        print("factories:", factories)
+                        print("metallic_elements:", metallic_elements)
+                        print("timber:", timber)
+                        print("plant:", plant)
+                    else:
+                        print("Illgeal flag")
                 else:
                     print("My State:", world[self.name])
             elif command == "mine":
@@ -87,7 +97,34 @@ class HumanPlayer(Player):
                     actions.append(mine)
             #todo: implement this
             elif command == "transform":
-                print("Not implemented!")
+                if len(tokens) < 3:
+                    print("missing parameters")
+                else:
+                    t = tokens[1].lower()
+                    multiplier = int(tokens[2])
+                    template = ""
+                    if t == "housing":
+                        template = housing
+                    if t == "alloys":
+                        template = alloys
+                    if t == "electronics":
+                        template = electronics
+                    if t == "farms":
+                        template = farms
+                    if t == "factories":
+                        template = factories
+                    if t == "metallic_elements":
+                        template = metallic_elements
+                    if t == "timber":
+                        template = timber
+                    if t == "plant":
+                        template = plant
+                    if template:
+                        transformation = Transformation(self.name, template, multiplier)
+                        print("Submitted: ", transformation.toString())
+                        actions.append(transformation)
+                    else:
+                        print("Illegal template")
             #lol why not
             elif command == "greedisgood":
                 money = 5000
@@ -99,12 +136,12 @@ class HumanPlayer(Player):
                 finish = True
             elif command == "help":
                 print("Here's a list of the commands: ")
-                print("show [-w] [-m] [-t (t1,t2,t3...)]")
-                print("buy (ticker) (strike1,quantity1,[expiration1]) (strike2,quantity2,[expiration2]) ...")
-                print("sell (ticker) (strike1,quantity1,[expiration1]) (strike2,quantity2,[expiration2]) ...")
-                print("mine (resource) (difficulty)")
-                print("transform (template) (multiplier)")
-                print("end")
+                print("1. show [-w] [-m] [-t (t1,t2,t3...)] [-tm]")
+                print("2. buy (ticker) (strike1,quantity1,[expiration1]) (strike2,quantity2,[expiration2]) ...")
+                print("3. sell (ticker) (strike1,quantity1,[expiration1]) (strike2,quantity2,[expiration2]) ...")
+                print("4. mine (resource) (difficulty)")
+                print("5. transform (template) (multiplier)")
+                print("6. end")
             else:
                 print("Illegal command")
             print()

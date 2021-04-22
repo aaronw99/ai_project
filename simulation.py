@@ -1,5 +1,6 @@
 from manager import Manager
 from naive_player import NaivePlayer
+from human_player import HumanPlayer
 import utils
 
 #set up game manager
@@ -19,7 +20,7 @@ playerBState = utils.getInitialState(initialStatePath, playerBName)
 playerBState["cash"] = 15000
 
 playerCName = "Carpania"
-playerC = NaivePlayer(playerCName)
+playerC = HumanPlayer(playerCName)
 playerCState = utils.getInitialState(initialStatePath, playerCName)
 playerCState["cash"] = 20000
 
@@ -31,7 +32,7 @@ print("Initial World State", gm.world)
 print()
 
 #start simulation
-rounds = 2
+rounds = 3
 for i in range(0, rounds):
     print("-----------Round " + str(i + 1) + "-----------")
     gm.playOneRound()
