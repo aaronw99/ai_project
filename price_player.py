@@ -23,23 +23,28 @@ class PricePlayer(Player):
                              "R1'", "R5'", "R6'", "R18'", "R19'", "R20'", "R21'", "R22'", "cash"]
         myResources = world[self.name]
         lowOnCash = myResources["cash"] <= 2000
+        # if the agent is low on cash, try to sell a type of resource for
+        # cash gain and at the same time mine for the loss
         if lowOnCash:
             bestResourceToMine = ""
             bestPrice = float("-inf")
+            # find the resource with the highest selling price
             for ticker in myResources.keys():
                 if ticker not in untradeable_resources:
                     sellPrice = market.quotePrice(ticker)["sellingPrice"]
                     if sellPrice > bestPrice:
                         bestResourceToMine = ticker
                         bestPrice = sellPrice
+            # if it exists, sell and mine
             if bestResourceToMine:
-                quantity = market.getBuyOrders(ticker)[0]["quantity"]
+                quantity = market.getBuyOrders(bestResourceToMine)[0]["quantity"]
                 if myResources[bestResourceToMine] < quantity:
                     quantity = myResources[bestResourceToMine] / 2
-                transaction = Transaction(self.name, "sell", {bestResourceToMine: [{"quantity": quantity, "strike": market.getBuyOrders(ticker)[0]["strike"], "expiration": 2}]}, market)
+                transaction = Transaction(self.name, "sell", {bestResourceToMine: [{"quantity": quantity, "strike": bestPrice, "expiration": 2}]}, market)
                 actions.append(transaction)
                 mine = Mine(self, bestResourceToMine, 2)
                 actions.append(mine)
+        # generate actions according to the supply and demand
         else:
             cashAmount = myResources["cash"]
             for ticker in myResources.keys():

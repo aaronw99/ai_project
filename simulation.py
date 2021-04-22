@@ -40,5 +40,5 @@ print("Initial World State", gm.world)
 print()
 
 # start simulation
-rounds = 5
+rounds = 3
 gm.run(rounds)

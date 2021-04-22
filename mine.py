@@ -52,7 +52,7 @@ class Mine:
     # < operator for Mine instances
     # @other(obj): an object
     def __lt__(self, other):
-        resources_df = pd.read_excel("../resources.xlsx")
+        resources_df = pd.read_excel("./resources.xlsx")
 
         if isinstance(other, Mine):
             if self.resource == other.resource:
