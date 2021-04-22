@@ -30,6 +30,7 @@ class Transaction:
             self.market.submitBuyOrders(self.order, self.name, world)
         if self.orderType == "sell":
             self.market.submitSellOrders(self.order, self.name, world)
+    
     def toString(self):
         string = ""
         for ticker in self.order.keys():
