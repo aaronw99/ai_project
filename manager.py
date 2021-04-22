@@ -54,5 +54,3 @@ class Manager:
     def run(self, rounds: int):
         for i in range(0, rounds):
             self.playOneRound()
-    
-    
