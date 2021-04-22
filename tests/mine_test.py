@@ -1,22 +1,26 @@
 import sys
 sys.path.append('../')
 
-from world import World
-from templates import housing, alloys, electronics, farms, factories
+from player import Player
 from mine import Mine
+from manager import Manager
 
-country1 = "Atlantis"
+class MinePlayer(Player):
+    def __init__(self, name):
+        Player.__init__(self, name)
+    
+    def generateActions(self, world, market):
+        mine = Mine(self, "R1", 3)
+        return [mine]
 
-transform_templates = [housing, alloys, electronics, farms, factories]
-myCountry = "Atlantis"
-world = World(myCountry, transform_templates, '/home/aaronwong/code/ai_project/test_initial_states/initial_state_2.xlsx', 'resources.xlsx')
-startState = world.getStartState()
-print(startState)
-startstate = world.getStartState
-
-mine = Mine(startState, country1, 'R6', difficulty=2)
-print(mine.toString())
-newstate = mine.execute()
-newstate = mine.execute()
-newstate = mine.execute()
-print(newstate)
+gm = Manager()
+playerA = MinePlayer("Atlantis")
+playerAState = {"R1": 10}
+gm.addPlayer(playerA, playerAState)
+print("initial world state:", gm.world)
+gm.playOneRound()
+print("after 1 round:", gm.world)
+gm.playOneRound()
+print("after 2 rounds:", gm.world)
+gm.playOneRound()
+print("after 3 rounds:", gm.world)

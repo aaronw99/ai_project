@@ -10,8 +10,11 @@ class Mine:
         self.difficulty = difficulty
     
     def execute(self, world):
+        # Once a mine action executes, the player is freed up to pursue different actions
         self.player.free = True
         population = world[self.player.name]["R1"]
+
+        # Scale the potential payout based on the difficulty of the mine action
         upper_limit = self.difficulty
         if population < 50:
             upper_limit = 50 * self.difficulty
@@ -22,7 +25,7 @@ class Mine:
         skewed = 20
 
         pers = np.arange(1, upper_limit, 1)
-        # Make the last n elements 10x more likely 
+        # Make the last 10 elements 10x more likely 
         # The mining country is likely to get a big payout, but chance is still involved and the country can get a lower payout
         prob = [1.0] * (len(pers) - (skewed)) + [10.0] * skewed
         # Normalising to 1.0

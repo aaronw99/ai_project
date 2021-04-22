@@ -6,16 +6,17 @@ import random
 from transaction import Transaction
 from mine import Mine
 
-# The RandomPlayer class is a player that randomly buys/sells/transforms each turn
+# The RandomPlayer class is a type of Player that randomly buys/sells/transforms each turn
+
 class RandomPlayer(Player):
     def __init__(self, name):
         Player.__init__(self, name)
         
     def generateActions(self, world, market):
-        # a list of the possible randoma ctions
+        # a list of the possible random actions
         actions = []
 
-        # generate possible transforms
+        # Generate possible transforms
         transform_templates = [housing, alloys, electronics, farms, factories, metallic_elements, timber, plant]
         myResources = world[self.name]
         for template in transform_templates:
@@ -25,7 +26,7 @@ class RandomPlayer(Player):
                 transform = Transformation(self.name, template, max_multiplier)
                 actions.append(transform)
 
-        # generate possible buys from the market
+        # Generate possible buys from the market
         untradeable_resources = ['R1', 'R4', 'R7', 'R19', 'R21', 'R22',
                              "R1'", "R5'", "R6'", "R18'", "R19'", "R20'", "R21'", "R22'", "cash"]
         resources = myResources.keys()
@@ -44,7 +45,7 @@ class RandomPlayer(Player):
                         transaction = Transaction(self.name, "buy", {resource: [{"quantity": quantity_to_buy, "strike": price}]}, market)
                         actions.append(transaction)
 
-        # generate possible sells for the market
+        # Generate possible sells for the market
         for resource in resources:
             if resource not in untradeable_resources:
                 quantity = myResources[resource]
@@ -52,19 +53,19 @@ class RandomPlayer(Player):
                     price = market.quotePrice(resource)["sellingPrice"]
                     if price == float("-inf"):
                         price = 30
-                    # create a sell order for a random amount of the resource that the country has at the market's price for it
+                    # Create a sell order for a random amount of the resource that the country has at the market's price for it
                     quantity = random.randint(1, quantity)
                     transaction = Transaction(self.name, "sell", {resource: [{"quantity": quantity, "strike": price}]}, market)
                     actions.append(transaction)
 
-        # generate possible random mine actions
+        # Generate possible random mine actions
         mineable_resources = ["R2", "R3", "R6"]
         for resource in mineable_resources:
             for difficulty in [1,2,3]:
                 mine = Mine(self, resource, difficulty)
                 actions.append(mine)
         
-        # return one random action of all the possible actions
+        # Return one random action of all the possible actions
         action = [random.choice(actions)]
         print(self.name + ": " + action[0].toString())
         return action
