@@ -3,12 +3,12 @@ from naive_player import NaivePlayer
 from human_player import HumanPlayer
 import utils
 
-#set up game manager
+# set up game manager
 gm = Manager()
-#the following is taken from test_initial_tests/initial_state_1.xlsx
+# the following is taken from test_initial_tests/initial_state_1.xlsx
 initialStateNum = "1"
 initialStatePath = "test_initial_states/initial_state_" + initialStateNum + ".xlsx"
-#construct player agents
+# construct player agents
 playerAName = "Atlantis"
 playerA = NaivePlayer(playerAName)
 playerAState = utils.getInitialState(initialStatePath, playerAName)
@@ -24,22 +24,13 @@ playerC = HumanPlayer(playerCName)
 playerCState = utils.getInitialState(initialStatePath, playerCName)
 playerCState["cash"] = 20000
 
-#add players to the game manager
+# add players to the game manager
 gm.addPlayer(playerA, playerAState)
 gm.addPlayer(playerB, playerBState)
 gm.addPlayer(playerC, playerCState)
 print("Initial World State", gm.world)
 print()
 
-#start simulation
+# start simulation
 rounds = 3
-for i in range(0, rounds):
-    print("-----------Round " + str(i + 1) + "-----------")
-    gm.playOneRound()
-    print("World State:", gm.world)
-    print()
-    print("------------Market------------")
-    gm.market.printOrderBook()
-    print("-------End of Round " + str(i + 1) + "--------")
-    print()
-    print()
+gm.run(rounds)
