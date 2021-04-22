@@ -46,4 +46,3 @@ class Transaction:
                     string = string + ", EXPIRATION: " + str(order["expiration"])
                 string = string + "\n"
         return string
-        
