@@ -58,7 +58,7 @@ class RandomPlayer(Player):
         for resource in resources:
             if resource not in untradeable_resources:
                 quantity = myResources[resource]
-                if quantity != 0:
+                if quantity > 0:
                     price = market.quotePrice(resource)["sellingPrice"]
                     if price == float("-inf"):
                         price = 30
@@ -74,7 +74,25 @@ class RandomPlayer(Player):
                 mine = Mine(self, resource, difficulty)
                 actions.append(mine)
         
-        # Return one random action of all the possible actions
-        action = [random.choice(actions)]
+        # Return 3-5 random actions of all the possible actions
+        random_actions = []
+        num_actions = random.randint(3,5)
+        has_mine = False
+        for i in range(num_actions):
+            while True:
+                action = random.choice(actions)
+                # If action was selected already
+                if action in random_actions:
+                    continue
+                # If a Mine action was already chosen
+                elif isinstance(action, Mine) and has_mine:
+                    continue
+                else:
+                    if isinstance(action, Mine):
+                        has_mine = True
+                    break
+
+            random_actions.append(action)
+                
         #print(self.name + ": " + action[0].toString())
-        return action
+        return random_actions
