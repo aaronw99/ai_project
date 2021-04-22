@@ -57,10 +57,9 @@ class Manager:
         for i in range(0, rounds):
             print("-----------Round " + str(i + 1) + "-----------")
             self.playOneRound()
+            print("-------End of Round " + str(i + 1) + "--------")
             print("World State:", self.world)
             print()
             print("------------Market------------")
             self.market.printOrderBook()
-            print("-------End of Round " + str(i + 1) + "--------")
-            print()
             print()

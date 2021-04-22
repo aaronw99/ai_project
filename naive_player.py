@@ -44,17 +44,17 @@ class NaivePlayer(Player):
             # convert a transfer that brings resource out to a market sell order
             if fromName == self.name:
                 price = market.quotePrice(ticker)["sellingPrice"]
-                # arbitrarily set the price so that we gain 50% of what we have in cash right now
+                # arbitrarily set the price so that we gain 25% of what we have in cash right now
                 if price == float("-inf"):
-                    price = world[self.name]["cash"] / 2 / quantity
+                    price = world[self.name]["cash"] / 4 / quantity
                 transaction = Transaction(self.name, "sell", {ticker: [{"quantity": quantity, "strike": price, "expiration": 2}]}, market)
                 actions.append(transaction)
             # convert a transfer that brings resource in to a market buy order
             else:
                 price = market.quotePrice(ticker)["buyingPrice"]
-                # arbitrarily use half of the money to bid for it
+                # arbitrarily use 25% of the money to bid for it
                 if price == float("inf"):
-                    price = world[self.name]["cash"] / 2 / quantity
+                    price = world[self.name]["cash"] / 4 / quantity
                 # buy as much as possible
                 else:
                     quantity = int(world[self.name]["cash"] / price)

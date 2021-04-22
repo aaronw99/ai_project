@@ -22,6 +22,8 @@ class HumanPlayer(Player):
     def generateActions(self, world, market):
         finish = False
         actions = []
+        untradeable_resources = ['R1', 'R4', 'R7', 'R19', 'R21', 'R22',
+                             "R1'", "R5'", "R6'", "R18'", "R19'", "R20'", "R21'", "R22'", "cash"]
         while not finish:
             print("Awaiting command: ")
             string = str(input())
@@ -32,43 +34,49 @@ class HumanPlayer(Player):
                     print("Missing parameters")
                 else:
                     ticker = tokens[1].upper()
-                    orders = []
-                    for i in range(2, len(tokens)):
-                        order = tokens[i].split(",")
-                        content = {}
-                        strike = float(order[0])
-                        content["strike"] = strike
-                        quantity = int(order[1])
-                        content["quantity"] = quantity
-                        if len(order) >= 3:
-                            expiration = int(order[2])
-                            content["expiration"] = expiration
-                        orders.append(content)
-                    transaction = Transaction(self.name, "buy", {ticker: orders}, market)
-                    actions.append(transaction)
-                    print("Submitted:")
-                    print(transaction.toString())
+                    if ticker in untradeable_resources:
+                        print("Cannot buy " + ticker)
+                    else:
+                        orders = []
+                        for i in range(2, len(tokens)):
+                            order = tokens[i].split(",")
+                            content = {}
+                            strike = float(order[0])
+                            content["strike"] = strike
+                            quantity = int(order[1])
+                            content["quantity"] = quantity
+                            if len(order) >= 3:
+                                expiration = int(order[2])
+                                content["expiration"] = expiration
+                            orders.append(content)
+                        transaction = Transaction(self.name, "buy", {ticker: orders}, market)
+                        actions.append(transaction)
+                        print("Submitted:")
+                        print(transaction.toString())
             elif command == "sell":
                 if len(tokens) < 3:
                     print("Missing parameters")
                 else:
                     ticker = tokens[1].upper()
-                    orders = []
-                    for i in range(2, len(tokens)):
-                        order = tokens[i].split(",")
-                        content = {}
-                        strike = float(order[0])
-                        content["strike"] = strike
-                        quantity = int(order[1])
-                        content["quantity"] = quantity
-                        if len(order) >= 3:
-                            expiration = int(order[2])
-                            content["expiration"] = expiration
-                        orders.append(content)
-                    transaction = Transaction(self.name, "sell", {ticker: orders}, market)
-                    actions.append(transaction)
-                    print("Submitted:")
-                    print(transaction.toString())
+                    if ticker in untradeable_resources:
+                        print("Cannot sell " + ticker)
+                    else:
+                        orders = []
+                        for i in range(2, len(tokens)):
+                            order = tokens[i].split(",")
+                            content = {}
+                            strike = float(order[0])
+                            content["strike"] = strike
+                            quantity = int(order[1])
+                            content["quantity"] = quantity
+                            if len(order) >= 3:
+                                expiration = int(order[2])
+                                content["expiration"] = expiration
+                            orders.append(content)
+                        transaction = Transaction(self.name, "sell", {ticker: orders}, market)
+                        actions.append(transaction)
+                        print("Submitted:")
+                        print(transaction.toString())
             elif command == "show":
                 if len(tokens) > 1:
                     flag = tokens[1].lower()

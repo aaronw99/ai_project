@@ -26,7 +26,6 @@ class Order:
         else:
             return False
     
-    #todo: some of these are unnecessary
     def setQuantity(self, quantity):
         self.quantity = quantity
         
