@@ -2,6 +2,8 @@ from player import Player
 from transaction import Transaction
 from mine import Mine
 
+# The PricePlayer class is an agent that uses supply and demand to predict the
+# price movement and act accordingly
 class PricePlayer(Player):
     # __init___
     # @name(str): the name of the player
