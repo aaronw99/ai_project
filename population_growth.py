@@ -1,6 +1,7 @@
 import copy
 from random import uniform
 
+# PopulationGrowth stimulates population growth in all countries of a state
 class PopulationGrowth:
 
     def __init__(self, state, percent):

@@ -7,6 +7,10 @@ import copy
 comfortable_level = {'R2': 1.5, 'R3': 1, 'R4': 6, 'R5': 50, 'R6': 250, 'R7': 300,
                           'R8': 33, 'R9': 2.5, 'R18': 1.5, 'R19': .4, 'R20': 10, 'R21': 3,  'R22': 1}
 
+'''
+The Thresholds class is primarily used in the Resource Game to determine how closely
+a country's resources are to the ideal level.
+'''
 class Thresholds:
     def __init__(self, state, country):
         self.state = copy.deepcopy(state)
@@ -14,16 +18,41 @@ class Thresholds:
         self.resources = self.state[self.country]
         self.population = self.resources["R1"]
         self.percentages = {}
+
+        # levels keeps track of a country's comfortable levels when scaled for population
         self.levels = {}
         for r in comfortable_level:
             self.levels[r] = self.population * comfortable_level[r]
         self.percentages = self.generate_percentages()
 
+    # checks if a country can afford to give away a resource at a certain amount
+    def is_valid_transfer(self, resource, amount):
+        return (self.resources[resource] - amount) > 0
+
+    # checks if a country has any resource under 20% threshold zone
+    def in_danger_zone(self):
+        for p in self.percentages:
+            if self.percentages[p] < 0.2:
+                return True
+        return False
+
+    # checks if a country has all resources in perfect state
+    def is_perfect(self):
+        for p in self.percentages:
+            if self.percentages[p] < 1:
+                return False
+        return True
+
     def get_population(self):
         return self.population
 
+    # only get resources we're evaluating
     def get_resources(self):
-        return self.resources
+        resources = {}
+        for r in self.resources:
+            if r in self.percentages:
+                resources[r] = self.resources[r]
+        return resources
 
     def get_percentages(self):
         return self.percentages
@@ -31,9 +60,11 @@ class Thresholds:
     def get_levels(self):
         return self.levels
 
+    # returns resource that a country needs the most
     def get_most_needed(self):
         return min(self.percentages, key=self.percentages.get)
 
+    # generate a random resource request
     def get_request(self, resource, lower_bound):
         return round(abs((1 - self.percentages[resource]) * self.levels[resource] * uniform(lower_bound,lower_bound * 2)))
     
@@ -44,7 +75,7 @@ class Thresholds:
     def generate_percentages(self):
         for resource in self.levels:
 
-            # can't generate or trade land, so disregard
+            # can't generate or trade land, so disregard R4
             if resource == 'R4':
                 continue
 
