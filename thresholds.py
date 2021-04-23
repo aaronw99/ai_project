@@ -1,9 +1,56 @@
+from random import uniform
+import copy
+
 # This file contains the threshold level for each resource
 
 # For survival thresholds, multiply each by .20
 comfortable_level = {'R2': 1.5, 'R3': 1, 'R4': 6, 'R5': 50, 'R6': 250, 'R7': 300,
                           'R8': 33, 'R9': 2.5, 'R18': 1.5, 'R19': .4, 'R20': 10, 'R21': 3,  'R22': 1}
 
+class Thresholds:
+    def __init__(self, state, country):
+        self.state = copy.deepcopy(state)
+        self.country = country 
+        self.resources = self.state[self.country]
+        self.population = self.resources["R1"]
+        self.percentages = {}
+        self.levels = {}
+        for r in comfortable_level:
+            self.levels[r] = self.population * comfortable_level[r]
+        self.percentages = self.generate_percentages()
+
+    def get_population(self):
+        return self.population
+
+    def get_resources(self):
+        return self.resources
+
+    def get_percentages(self):
+        return self.percentages
+    
+    def get_levels(self):
+        return self.levels
+
+    def get_most_needed(self):
+        return min(self.percentages, key=self.percentages.get)
+
+    def get_request(self, resource, lower_bound):
+        return round(abs((1 - self.percentages[resource]) * self.levels[resource] * uniform(lower_bound,lower_bound * 2)))
+    
+    # utils 
+
+    # generate_percentages 
+    # returns a dictionary of the percentages at which the country is satisfying each resource
+    def generate_percentages(self):
+        for resource in self.levels:
+
+            # can't generate or trade land, so disregard
+            if resource == 'R4':
+                continue
+
+            self.percentages[resource] = self.resources[resource] / self.levels[resource]
+        return self.percentages 
+    
 
 '''
 Thresholds reflect number of resources needed per 1 million people

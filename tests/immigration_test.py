@@ -23,7 +23,7 @@ startState = world.getStartState()
 for i in range(1, 100):
     imm1 = Immigration(state=startState, country_from="Brobdingnag", country_to="Atlantis", cf_model="Libya", cycle=-i, models=models)
     multiplier = uniform(0.75,1.25)
-    imm1.randomizeLevel(multiplier, 0.2)
+    imm1.randomize_level(multiplier, 0.2)
     print(imm1)
     state_after_imm = imm1.execute()
     growth = PopulationGrowth(state_after_imm, 1.5)
