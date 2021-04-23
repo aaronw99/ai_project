@@ -3,17 +3,17 @@ from immigration_nb import populations, models
 from population_growth import PopulationGrowth
 from random import randint, uniform
 from templates import housing, alloys, electronics, farms, factories, metallic_elements, timber, plant
+from thresholds import Thresholds
 from world import World
 
-print("Welcome to the Resource Game! You represent Atlantis, the land of opportunity."+
-"\n\nHere are your instructions:\n\n" +
-"You will start with 50% resource levels.\n\n" + 
-"Every round, you will be given 3 opportunties to build new resources " +
-"or ask for resources from other countries.\n\nThen, each country will " +
-"offer to send over immigrants or demand a resource.\n\nYour objective " +
-"is to reach comfortable levels for all resources.\n\nIf you hang below " +
-"survival for any resource for longer than 3 rounds, you will lose.\n\n" +
-"Good luck and have fun!")
+print("Welcome to the Resource Game! You represent Atlantis, the land of opportunity.\n\n"+
+"You will start with all your resource levels at 50%.\n\n" + 
+"Every round, you will be given 3 turns. You can either a) mine new resources, " +
+"b) transform your resources, or c) ask for resources from other countries. Keep " + 
+"in mind that other countries can deny your request.\n\nThen, each CPU country will " +
+"give you two options: a) offer to send over immigrants or b) demand a resource.\n\n" + 
+"Your objective is to reach comfortable levels for all resources.\n\nIf you hang below " +
+"survival for any resource for longer than 3 rounds, you will lose.")
 
 transform_templates = [housing, alloys, electronics, farms, factories, metallic_elements, timber, plant]
 myCountry = "Atlantis"
@@ -40,6 +40,13 @@ while len(rand_indices) < 4:
 for i,num in enumerate(rand_indices):
     country_map[virtual_countries[i]] = real_countries[num]
 
+# for country in virtual_countries:
+#     t = Thresholds(state,country)
+#     print(country)
+#     print(t.get_percentages())
+#     print(t.get_most_needed())
+#     print()
+
 '''
 Todo:
 1. Create skeleton of game with only immigrations -- done
@@ -47,25 +54,59 @@ Todo:
 3. Have other countries randomly encompass states
 4. Add slides
 '''
+
 finished = False
 year = 1
 while not finished:
+    t = Thresholds(state, myCountry)
+
+    print("\nYour resource levels:")
+    print(t.get_levels())
+
+    print("\nYour resource percentages:")
+    print(t.get_percentages())
+
+    print("\nYOUR TURN")
     
+    for i in range(3):
+        print("\nYour three options:")
+        print("\t1. Mine")
+        print("\t2. Transform")
+        print("\t3. Request")
+        choice = input("Enter your choice here: ")
+
+        if choice == "1":
+            print("Mine operation here")
+        elif choice == "2":
+            print("Transform operation here")
+        elif choice == "3":
+            print("Request operation here")
+        else: 
+            print("Please enter 1, 2, or 3")
+    
+    print("\nOPPONENTS TURN")
     for country in country_map:
+
         imm = Immigration(state=state, country_from=country, 
             country_to="Atlantis", cf_model=country_map[country], 
             cycle=year, models=models)
         multiplier = uniform(0.75,1.25)
-        imm.randomizeLevel(multiplier,0.1)
-        print(imm)
-        state = imm.execute()
+        imm.randomize_level(multiplier,0)
+        imm_level = imm.get_level()
+
+        t = Thresholds(state, country)
+        req = t.get_request(t.get_most_needed(), year * 0.05)
+
+        print("\nAs",country,"we give you 2 options: ")
+        print("\t1. Accept", imm_level, "new people into your country")
+        print("\t2. Give us", req, "units of", t.get_most_needed())
+        choice = input("Put your choice here: ")
+        if choice == "1":
+            state = imm.execute()
+        elif choice == "2":
+            print("Transfer operation here")
 
     growth = PopulationGrowth(state, uniform(1.01,1.5))
     state = growth.execute()
-    print(state)
-    
-    quit = input("Quit? ")
-    if quit.lower() == 'yes':
-        finished = True
-    
+
     year += 1
