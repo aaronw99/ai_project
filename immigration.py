@@ -4,7 +4,6 @@ from random import random
 # The Immigration class represents the singleton immigration operation
 class Immigration:
 
-    # immigration defaults to Atlantis, but could be changed
     def __init__(self, state, country_from, country_to, cf_model, cycle, models):
         self.state = copy.deepcopy(state)
         self.country_from = country_from
@@ -22,9 +21,6 @@ class Immigration:
         self.state[self.country_to]["R1"] += self.level / 1000000
         self.state[self.country_from]["R1"] -= self.level / 1000000
         return self.state
-    
-    def offer(self):
-        return f"{self.country_from} offers to give {self.country_to} {self.level} people"
 
     def get_level(self):
         return round(self.level)
