@@ -14,7 +14,7 @@ initialStatePath = "test_initial_states/initial_state_" + initialStateNum + ".xl
 playerAName = "Atlantis"
 playerA = NaivePlayer(playerAName)
 playerAState = utils.getInitialState(initialStatePath, playerAName)
-playerAState["cash"] = 7000
+playerAState["cash"] = 10000
 
 playerBName = "Brobdingnag"
 playerB = RandomPlayer(playerBName)
@@ -29,16 +29,22 @@ playerCState["cash"] = 20000
 playerDName = "Dinotopia"
 playerD = PricePlayer(playerDName)
 playerDState = utils.getInitialState(initialStatePath, playerDName)
-playerDState["cash"] = 10000
+playerDState["cash"] = 7000
+
+playerEName = "Erewhon"
+playerE = PricePlayer(playerEName)
+playerEState = utils.getInitialState(initialStatePath, playerEName)
+playerEState["cash"] = 5000
 
 # add players to the game manager
 gm.addPlayer(playerA, playerAState)
 gm.addPlayer(playerB, playerBState)
 gm.addPlayer(playerC, playerCState)
 gm.addPlayer(playerD, playerDState)
+gm.addPlayer(playerE, playerEState)
 print("Initial World State", gm.world)
 print()
 
 # start simulation
-rounds = 3
+rounds = 5
 gm.run(rounds)
