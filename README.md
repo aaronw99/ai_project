@@ -8,3 +8,6 @@ Run `python3 simulation.py` or `python simulation.py` depending on which version
 2. We have provided a set of predefined actions, see transaction.py, transformation.py, and mine.py
 3. To see how the market system works in details, please refer to market.py and we also have a demo file, which is titled tests/market_test.py.
 4. All code is commented.
+
+**Resource Game**:
+Run `python3 resource_game.py` or `python resource_game.py` to play the Resource Game. Experiment with different strategies to attain the best results!
